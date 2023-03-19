@@ -52,7 +52,7 @@ app.post('/', async (req, res) => {
     console.log('last_response: ', last_response);
 
     // const {spawn} = require('child_process');
-    const pyProg = spawn('C:/Python310/python.exe', ['./queryandrequest.py', input, selectedOption1, selectedOption2, last_response, last_prompt]);
+    const pyProg = spawn(process.env.PYTHON_PATH || 'C:/Python310/python.exe', ['./queryandrequest.py', input, selectedOption1, selectedOption2, last_response, last_prompt]);
 
     let response = '';
     
