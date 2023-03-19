@@ -11,17 +11,15 @@ Join our Discord: https://discord.gg/xM7YXnKr
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/mrsmirf/BibleBuddy.git`
+1. Clone the repository: `git clone https://github.com/epicshardz/BibleBuddy.git`
 2. Navigate to the project directory: `cd BibleBuddy`
 3. Install the required dependencies: `npm install`
 
 ## Usage
 
-1. Start the client side, by `cd client`: `npm run dev`
-2. Start the server side, by `cd server`: `npm run server`
-3. Open your web browser and navigate to `http://localhost:5000`
-4. In config.js file update "https://biblebuddy.onrender.com", just change to http://localhost:5000
-5. Ask your Bible-related questions and get answers from the AI!
+1. Start it up `cd client`: `npm start`
+2. Open your web browser and navigate to `http://localhost:5001`
+3. Ask your Bible-related questions and get answers from the AI!
 
 ## Creating a database
 
