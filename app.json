@@ -1,0 +1,7 @@
+{
+  "name": "biblebuddy",
+  "description": "A chat application that provides Bible related answers",
+  "repository": "https://github.com/epicshardz/BibleBuddy",
+  "keywords": ["node", "express", "heroku"],
+  "image": "heroku/nodejs"
+}
