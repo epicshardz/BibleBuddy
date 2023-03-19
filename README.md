@@ -17,7 +17,7 @@ Join our Discord: https://discord.gg/xM7YXnKr
 
 ## Usage
 
-1. Start it up `cd client`: `npm start`
+1. Start it up: `npm start`
 2. Open your web browser and navigate to `http://localhost:5001`
 3. Ask your Bible-related questions and get answers from the AI!
 
