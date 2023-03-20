@@ -94,7 +94,10 @@ app.post('/', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send(error || 'Something went wrong');
+    res.send(JSON.stringify({error:data.toString()}));
   }
 })
+
+
 // app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
 app.listen(PORT, () => console.log(`AI server started on http://localhost:${PORT}`));
