@@ -1,7 +1,8 @@
 const express = require('express')
 const path = require('path')
 const { spawn } = require('child_process');
-
+const isHeroku = process.env.NODE_ENV === 'production' && process.env.DYNO;
+const pythonPath = isHeroku ? '/usr/bin/python' : 'C:/Python310/python.exe';
 const app = express()
 const PORT = process.env.PORT || 5001
 
@@ -53,7 +54,7 @@ app.post('/', async (req, res) => {
 
     // const {spawn} = require('child_process');
     //'C:/Python310/python.exe' for local
-    const pyProg = spawn('python' || 'C:/Python310/python.exe', ['./queryandrequest.py', input, selectedOption1, selectedOption2, last_response, last_prompt]);
+    const pyProg = spawn(pythonPath, ['./queryandrequest.py', input, selectedOption1, selectedOption2, last_response, last_prompt]);
 
     let response = '';
     
