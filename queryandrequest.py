@@ -7,7 +7,10 @@ from langchain.prompts.chat import (
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import VectorDBQAWithSourcesChain
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
+# from langchain.vectorstores import Chroma
+from langchain.vectorstores import Qdrant
+from qdrant_client import QdrantClient
+
 import os
 import sys
 import json
@@ -17,6 +20,8 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+os.environ["QDRANT_API_KEY"] = os.getenv("QDRANT_API_KEY")
+os.environ["QDRANT_HOST"] = os.getenv("QDRANT_HOST")
 # bring in inputs
 text = sys.argv[1]
 bible = sys.argv[2]
@@ -49,12 +54,21 @@ prompt = ChatPromptTemplate.from_messages(messages)
 
 embedding = OpenAIEmbeddings()
 
-persist_directory = "db/Bibles/Collections/" + bible
-print(persist_directory)
+# persist_directory = "db/Bibles/Collections/" + bible
+# print(persist_directory)
 # Now we can load the persisted database from disk, and use it as normal.
-vectordb1 = Chroma(persist_directory=persist_directory,
-                   embedding_function=embedding)
+# vectordb1 = Chroma(persist_directory=persist_directory,
+#                    embedding_function=embedding)
 
+
+# host = "biblebuddycluster"
+api_key = os.environ["QDRANT_API_KEY"]
+hosturl = os.environ["QDRANT_HOST"]
+client = QdrantClient(url=hosturl, prefer_grpc=True, api_key=api_key)
+collection_name = bible
+embeddings = OpenAIEmbeddings()
+vectordb1 = Qdrant(client, collection_name,
+                   embedding_function=embeddings.embed_query)
 # Future
 # if denom == "Non-Denominational":
 #     vectortable = vectordb1

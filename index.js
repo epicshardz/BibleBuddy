@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5001
 
 app.use(express.static(path.join(__dirname, 'public'), {
   setHeaders: function(res, path) {
-    console.log('path',path)
+    // console.log('path',path)
 
     if (path.endsWith('.js')) {
       res.set('Content-Type', 'text/javascript');
