@@ -32,7 +32,7 @@ print("#######bible:", bible)
 
 
 system_template = """Use the following pieces of context to answer the users question. 
-If you don't know the answer, just say that you don't know, don't try to make up an answer. If its useful, the last response you gave was {last_response}, if its not useful, just ignore I said anything about it.
+If you don't know the answer, just say that you don't know, don't try to make up an answer! I repeat, only answer based on the context. If its useful, the last response you gave was {last_response}, if its not useful, just ignore I said anything about it.
 ALWAYS return a scripture "SOURCES" part in your answer.
 The scripture "sources" part should be a reference to the verse/verses of the document from which you got your answer.
 
