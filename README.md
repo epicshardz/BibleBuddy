@@ -14,12 +14,19 @@ Join our Discord: https://discord.gg/xM7YXnKr
 1. Clone the repository: `git clone https://github.com/epicshardz/BibleBuddy.git`
 2. Navigate to the project directory: `cd BibleBuddy`
 3. Install the required dependencies: `npm install`
+4. Change the name of example env to .env
+5. Add your Open AI API Key
+6. Create a Qdrant cluster following this link: https://cloud.qdrant.io/
+7. Add your API Key and your Hosting URL to the .env file
 
-## Usage
+## Local Usage
 
 1. Start it up: `npm start`
 2. Open your web browser and navigate to `http://localhost:5001`
 3. Ask your Bible-related questions and get answers from the AI!
+
+## Deployment
+1. ....See deployment in github right side. Will update with instuctions soon.
 
 ## Creating a database
 

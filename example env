@@ -1,0 +1,4 @@
+TIMES=2
+OPENAI_API_KEY="your - key"
+QDRANT_API_KEY="your - key"
+QDRANT_HOST="your - key"
