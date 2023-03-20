@@ -3,5 +3,10 @@
   "description": "A chat application that provides Bible related answers",
   "repository": "https://github.com/epicshardz/BibleBuddy",
   "keywords": ["node", "express", "heroku"],
-  "image": "heroku/nodejs"
+  "image": "heroku/nodejs",
+  "default_process_types": {
+    "web": {
+      "timeout": 120
+    }
+  }
 }
