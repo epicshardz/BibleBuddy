@@ -1,2 +1,2 @@
 web: npm start
-worker: npm queryandrequest.js
+worker: node queryandrequest.js
