@@ -30,14 +30,14 @@ Join our Discord: https://discord.gg/xM7YXnKr
 
 ## Creating a database
 
-1. Look for ChatVectorDBChain.ipynb and follow the directions provided. 
+1. Look for QdrantDBCreation.ipynb and follow the directions provided. 
     
 ## Tips and Findings
     
 1. Tips, use separate folders for separate DBs
 2. Using an agent takes upwards to a minute to get the completed answer.
 
-## Powered by OpenAI, LangChain, & Node.js
+## Powered by OpenAI, LangChain, Qdrant, & Node.js
 
 ## License
 
