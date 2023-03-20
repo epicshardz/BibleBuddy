@@ -1,3 +1,2 @@
 python-3.10.10
 PYTHONHOME=
-PYTHONPATH=
