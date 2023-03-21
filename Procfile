@@ -1,2 +1,2 @@
 web: npm start
-worker: python queryandrequest.py
+# worker: python queryandrequest.py
