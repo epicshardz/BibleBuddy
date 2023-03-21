@@ -7,7 +7,6 @@ from langchain.prompts.chat import (
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import VectorDBQAWithSourcesChain
 from langchain.embeddings.openai import OpenAIEmbeddings
-# from langchain.vectorstores import Chroma
 from langchain.vectorstores import Qdrant
 from qdrant_client import QdrantClient
 
@@ -54,14 +53,6 @@ prompt = ChatPromptTemplate.from_messages(messages)
 
 embedding = OpenAIEmbeddings()
 
-# persist_directory = "db/Bibles/Collections/" + bible
-# print(persist_directory)
-# Now we can load the persisted database from disk, and use it as normal.
-# vectordb1 = Chroma(persist_directory=persist_directory,
-#                    embedding_function=embedding)
-
-
-# host = "biblebuddycluster"
 api_key = os.environ["QDRANT_API_KEY"]
 hosturl = os.environ["QDRANT_HOST"]
 client = QdrantClient(url=hosturl, prefer_grpc=True, api_key=api_key)
@@ -69,68 +60,16 @@ collection_name = bible
 embeddings = OpenAIEmbeddings()
 vectordb1 = Qdrant(client, collection_name,
                    embedding_function=embeddings.embed_query)
-# Future
-# if denom == "Non-Denominational":
-#     vectortable = vectordb1
-# else:
-#     persist_directory = 'db/Denominations/Collections/{denom}'
-#     # Now we can load the persisted database from disk, and use it as normal.
-#     vectordb2 = Chroma(persist_directory=persist_directory,
-#                        embedding_function=embedding)
-##########
 vectortable = vectordb1
-# chain_type_kwargs = {"prompt": prompt}
-
-
-# def get_chat_history(inputs) -> str:
-#     res = []
-#     for human, ai in inputs:
-#         res.append(f"Human:{human}\nAI:{ai}")
-#     return "\n".join(res)
-
 
 qa = ChatVectorDBChain.from_llm(ChatOpenAI(
     temperature=0), vectortable, qa_prompt=prompt, return_source_documents=True)
 
-# chain = VectorDBQAWithSourcesChain.from_chain_type(
-#     ChatOpenAI(temperature=0),
-#     chain_type="stuff",
-#     # chain_type="map_reduce",
-#     vectorstore=vectortable,
-#     chain_type_kwargs=chain_type_kwargs,
-#     verbose=False
-#     # max_tokens_limit=3000,
-#     # reduce_k_below_max_tokens=True
-#     # memory=ConversationalBufferWindowMemory(k=2)
-# )
-
-
-# if not last_response or last_response.isspace() or not last_prompt:
-#     chat_history = []
-# else:
-#     chat_history = [(last_prompt, last_response)]
 chat_history = []
-# chat_history = []
 query = text
 result = qa({"question": query, "chat_history": chat_history,
             "last_response": last_response})
 response = result["answer"]
-
-# response = chain({"question": text}, return_only_outputs=True)
-
-# print the response text
-# print(texty)
-# output = {
-#     'answer': response['answer'],
-#     'sources': response['sources']
-# # }
-# if 'sources' not in response or not response['sources']:
-#     cleaned_text = response['answer']
-# else:
-#     cleaned_text = response['answer'] + 'Sources: ' + response['sources']
-
-
-# cleaned_text = response['answer'] + 'Sources: ' + response['sources']
 
 print("{", response, "}")
 print(result['source_documents'])

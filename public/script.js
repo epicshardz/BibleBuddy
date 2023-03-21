@@ -90,9 +90,6 @@ const handleSubmit = async (e) => {
   const selectedOption1 = option1.options[option1.selectedIndex].text;
   const option2 = document.querySelector(".second-dropdown");
   const selectedOption2 = option2.options[option2.selectedIndex].text;
-  // console.log('selectedOption1:',selectedOption1)
-  
-  // console.log("script last response:",last_response)
 
 const response = await fetch(config.serverUrl, {
   method: 'POST',
@@ -116,8 +113,11 @@ const response = await fetch(config.serverUrl, {
 
   if(response.ok){
     const data = await response.json();
-    const parsedData = data.bot.trim();
-    // const sourceData = data.source_documents.join(", ").trim().replace(/\n\n/g, '<br />');
+    const parsedData = data.bot
+      .trim()
+      .replace(/\n/g, '')
+      .replace(/\\n\\n/g, '');
+
     const sourceData = data.source_documents
     .join(", ")
     .trim()
@@ -128,18 +128,12 @@ const response = await fetch(config.serverUrl, {
 
     const parsedDataContainer = document.createElement('div');
     typeText(parsedDataContainer, parsedData)
-    // parsedDataContainer.innerHTML = parsedData;
-    // console.log("response: ",parsedData)
     last_response = parsedData;
-    // chat_history.push(last_response);
-    // last_response = JSON.stringify({
-    //   prompt: last_prompt,
-    //   response: parsedData
-    // });
-
     
     // Add the parsed data container to the message div
     messageDiv.appendChild(parsedDataContainer);
+
+    const space = document.createTextNode(' ');
 
     // Create the "Read more" button and add it after the parsed data container
     const showSourcesButton = document.createElement('button');
@@ -184,41 +178,9 @@ document.addEventListener('click', function(event) {
 });
 
 
-// Fetch Bible folder names from server using fetch API and store them in a variable
-// async function getDirectoryList(url) {
-//   let directoryList = [];
-
-//   try {
-//     const response = await fetch(url);
-//     const data = await response.json();
-//     directoryList = data.folders;
-//     // console.log(directoryList);
-//   } catch (error) {
-//     console.error(error);
-//   }
-
-//   return directoryList;
-// }
-
 let BibleFolderNames = ["ASV","Collections","KJV","NKJV"];
-// BibleFolderNames = await getDirectoryList('https://biblebuddy.onrender.com/db/Bibles');
-
-
-// async function loadBibleFolderNames() {
-//   // let BibleFolderNames = [];
-//   BibleFolderNames = await getDirectoryList('https://biblebuddy.onrender.com/db/Bibles');
-//   // Do something with BibleFolderNames
-// }
-// loadBibleFolderNames();
-
-
-// console.log(BibleFolderNames);
 
 let DenominationsFolderNames = ["Collections","Seventh Day Adventist"];
-// async function loadDenomFolderNames() {
-//   DenominationsFolderNames = await getDirectoryList('https://biblebuddy.onrender.com/db/Denominations');
-// }
-// loadDenomFolderNames();
 ///////Create menu
 const menuButton = document.getElementById('menu_button');
 
