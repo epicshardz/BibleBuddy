@@ -32,11 +32,17 @@ Join our Discord: https://discord.gg/xM7YXnKr
 
 1. Look for QdrantDBCreation.ipynb and follow the directions provided. 
     
-## Tips and Findings
-    
-1. Tips, use separate folders for separate DBs
-2. Using an agent takes upwards to a minute to get the completed answer.
+## How you can help
 
+This project is entirely open source and that means anyone can contribute. Opportunites for improvement are listed below, please contact me in the discord if you are interest in helping. 
+
+1. Add Caching for quicker responses of repeated questions
+2. Adding more Bibles
+3. Clean up existing bibles to include book in reference for NKJV and ASV.
+4. Add Donation button, for keeping servers running
+5. Figure out how to query multiple databases with langchain, when not using an agent.
+6. ....future
+    
 ## Powered by OpenAI, LangChain, Qdrant, & Node.js
 
 ## License
