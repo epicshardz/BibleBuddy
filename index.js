@@ -48,8 +48,8 @@ app.post('/', async (req, res) => {
 
 
     console.log('prompt: ', input);
-    console.log('selectedOption1: ', selectedOption1);
-    console.log('selectedOption2: ', selectedOption2);
+    // console.log('selectedOption1: ', selectedOption1);
+    // console.log('selectedOption2: ', selectedOption2);
     console.log('last_response: ', last_response);
 
     // const {spawn} = require('child_process');
@@ -81,7 +81,7 @@ app.post('/', async (req, res) => {
       // console.log('response 1:', result);
       const match = result.match(/{([^}]+)}/);
       const clean_text = match ? match[1] : '';
-      // console.log('cleaned text:', clean_text);
+      console.log('Response:', clean_text);
       res.status(200).send({
         bot: clean_text,
         source_documents: cleanedText

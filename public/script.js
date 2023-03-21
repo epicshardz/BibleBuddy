@@ -90,9 +90,9 @@ const handleSubmit = async (e) => {
   const selectedOption1 = option1.options[option1.selectedIndex].text;
   const option2 = document.querySelector(".second-dropdown");
   const selectedOption2 = option2.options[option2.selectedIndex].text;
-  console.log('selectedOption1:',selectedOption1)
+  // console.log('selectedOption1:',selectedOption1)
   
-  console.log("script last response:",last_response)
+  // console.log("script last response:",last_response)
 
 const response = await fetch(config.serverUrl, {
   method: 'POST',
@@ -128,6 +128,7 @@ const response = await fetch(config.serverUrl, {
 
     const parsedDataContainer = document.createElement('div');
     parsedDataContainer.innerHTML = parsedData;
+    // console.log("response: ",parsedData)
     last_response = parsedData;
     // chat_history.push(last_response);
     // last_response = JSON.stringify({
