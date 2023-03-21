@@ -127,7 +127,8 @@ const response = await fetch(config.serverUrl, {
 
 
     const parsedDataContainer = document.createElement('div');
-    parsedDataContainer.innerHTML = parsedData;
+    typeText(parsedDataContainer, parsedData)
+    // parsedDataContainer.innerHTML = parsedData;
     // console.log("response: ",parsedData)
     last_response = parsedData;
     // chat_history.push(last_response);
