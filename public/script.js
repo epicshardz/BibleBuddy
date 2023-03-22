@@ -115,8 +115,8 @@ const response = await fetch(config.serverUrl, {
     const data = await response.json();
     const parsedData = data.bot
       .trim()
-      .replace(/\n/g, '')
-      .replace(/\\n\\n/g, '');
+      // .replace(/\n/g, '')
+      // .replace(/\\n\\n/g, '');
 
     const sourceData = data.source_documents
     .join(", ")
@@ -127,13 +127,12 @@ const response = await fetch(config.serverUrl, {
 
 
     const parsedDataContainer = document.createElement('div');
+    
     typeText(parsedDataContainer, parsedData)
     last_response = parsedData;
     
     // Add the parsed data container to the message div
     messageDiv.appendChild(parsedDataContainer);
-
-    const space = document.createTextNode(' ');
 
     // Create the "Read more" button and add it after the parsed data container
     const showSourcesButton = document.createElement('button');
