@@ -197,7 +197,7 @@ menuText.textContent = 'Welcome to BibleBuddy!';
 menuContainer.appendChild(menuText);
 
 const instructionText = document.createElement('p');
-instructionText.textContent = 'Ask any question and get an answer from our AI but only if its in the Bible';
+instructionText.textContent = 'Ask BibleBuddy any Bible-related question and receive an accurate answer in seconds!';
 
 // Add the text to the menu container
 menuContainer.appendChild(instructionText);
@@ -246,6 +246,29 @@ DenominationsFolderNames.forEach(folderName => {
 
 // Add the second dropdown to the menu container
 menuContainer.appendChild(secondDropdown);
+
+// Create the announcements section
+const announcementsSection = document.createElement('div');
+announcementsSection.classList.add('announcements-section');
+// Add a message to the announcements section
+const announcementsMessage = document.createElement('p');
+announcementsMessage.textContent = 'Announcements:';
+
+// Add the message to the announcements section
+announcementsSection.appendChild(announcementsMessage);
+
+// Add the announcements section to the menu container
+menuContainer.appendChild(announcementsSection);
+
+// Create the Discord group link
+const discordLink = document.createElement('a');
+discordLink.classList.add('discord-link');
+discordLink.href = 'https://discord.gg/BYGtb7swfe';
+discordLink.target = '_blank';
+discordLink.textContent = 'Join our Discord group!';
+
+// Add the Discord group link to the announcements section
+announcementsSection.appendChild(discordLink);
 
 // Append the menu container to the page
 document.body.appendChild(menuContainer);

@@ -39,7 +39,7 @@ This project is entirely open source and that means anyone can contribute. Oppor
 1. Add Caching for quicker responses of repeated questions
 2. Adding more Bibles
 3. Clean up existing bibles to include book in reference for NKJV and ASV.
-4. Add Donation button, for keeping servers running
+4. [DONE] Add Donation button, for keeping servers running
 5. Figure out how to query multiple databases with langchain, when not using an agent.
 6. ....future
     
