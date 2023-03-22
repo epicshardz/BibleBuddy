@@ -4,7 +4,7 @@ const botImageUrl = './bot.svg';
 const userImageUrl = './user.svg';
 const form = document.querySelector('form')
 const chatContainer = document.querySelector('#chat_container')
-
+const usageGuide = document.getElementById('usage-guide');
 let loadInterval;
 console.log('script running')
 // This function shows the ... while the Ai is loading/processing
@@ -66,6 +66,9 @@ let last_response = "";
 let last_prompt = ""
 const handleSubmit = async (e) => {
   e.preventDefault();
+  if (usageGuide) {
+    usageGuide.style.display = 'none';
+  }
 
   const data = new FormData(form);
 
@@ -198,6 +201,12 @@ instructionText.textContent = 'Ask any question and get an answer from our AI bu
 
 // Add the text to the menu container
 menuContainer.appendChild(instructionText);
+
+const BibleVersionText = document.createElement('p');
+BibleVersionText.textContent = 'Select a Bible Version';
+
+// Add the text to the menu container
+menuContainer.appendChild(BibleVersionText);
 
 // Create the first dropdown menu
 const firstDropdown = document.createElement('select');
