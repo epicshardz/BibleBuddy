@@ -120,23 +120,23 @@ app.post('/', async (req, res) => {
 
       // Wait for the job to complete
       response = await job.finished();
-      console.log("Response object:", response);
+      // console.log("Response object:", response);
 
-      const responseData = response.data; // Extract the data property from the response object
-      // cleanedText = result.cleanedText;
-      // result = result.result;
-      // console.log(`Python script exited with code ${code}`);
+      // const responseData = response.data; // Extract the data property from the response object
+      // // cleanedText = result.cleanedText;
+      // // result = result.result;
+      // // console.log(`Python script exited with code ${code}`);
 
-      const cleanedText = extractStrings(responseData);
-      const startIndex = responseData.indexOf('{');
-      const endIndex = responseData.lastIndexOf('}');
-      const result = responseData.substring(startIndex, endIndex + 1);
-      const match = result.match(/{([^}]+)}/);
-      const clean_text = match ? match[1] : '';
-      console.log('responseData:', clean_text);
+      // const cleanedText = extractStrings(responseData);
+      // const startIndex = responseData.indexOf('{');
+      // const endIndex = responseData.lastIndexOf('}');
+      // const result = responseData.substring(startIndex, endIndex + 1);
+      // const match = result.match(/{([^}]+)}/);
+      // const clean_text = match ? match[1] : '';
+      console.log('responseData:', response.clean_text);
       res.status(200).send({
-        bot: clean_text,
-        source_documents: cleanedText
+        bot: response.clean_text,
+        source_documents: response.cleanedText
       });
       
     } else {
