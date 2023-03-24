@@ -65,102 +65,107 @@ let chat_history = [];
 let last_response = "";
 let last_prompt = ""
 const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (usageGuide) {
-    usageGuide.style.display = 'none';
-  }
+  try {
+    e.preventDefault();
+    if (usageGuide) {
+      usageGuide.style.display = 'none';
+    }
 
-  const data = new FormData(form);
+    const data = new FormData(form);
 
-  //user's chatStripe
-  last_prompt = data.get('prompt').replace(/\\n\\n/g, '')
-  chatContainer.innerHTML += chatStrip(false, data.get('prompt'));
+    //user's chatStripe
+    last_prompt = data.get('prompt').replace(/\\n\\n/g, '')
+    chatContainer.innerHTML += chatStrip(false, data.get('prompt'));
 
-  form.reset()
+    form.reset()
 
-  // bot's chatstripe
-  const uniqueId = generateUniqueId();
-  chatContainer.innerHTML += chatStrip(true, " ", uniqueId);
+    // bot's chatstripe
+    const uniqueId = generateUniqueId();
+    chatContainer.innerHTML += chatStrip(true, " ", uniqueId);
 
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+    chatContainer.scrollTop = chatContainer.scrollHeight;
 
-  const messageDiv = document.getElementById(uniqueId);
+    const messageDiv = document.getElementById(uniqueId);
 
-  loader(messageDiv);
+    loader(messageDiv);
 
-  // fetch data from server
-  const option1 = document.querySelector(".first-dropdown");
-  const selectedOption1 = option1.options[option1.selectedIndex].text;
-  const option2 = document.querySelector(".second-dropdown");
-  const selectedOption2 = option2.options[option2.selectedIndex].text;
+    // fetch data from server
+    const option1 = document.querySelector(".first-dropdown");
+    const selectedOption1 = option1.options[option1.selectedIndex].text;
+    const option2 = document.querySelector(".second-dropdown");
+    const selectedOption2 = option2.options[option2.selectedIndex].text;
 
-const response = await fetch(config.serverUrl, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  credentials: 'include', // Add this line
-  body: JSON.stringify({
-    prompt: data.get('prompt'),
-    selectedOption1: selectedOption1,
-    selectedOption2: selectedOption2,
-    last_response: last_response,
-    last_prompt: last_prompt,
-  })
-})
+    const response = await fetch(config.serverUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include', // Add this line
+      body: JSON.stringify({
+        prompt: data.get('prompt'),
+        selectedOption1: selectedOption1,
+        selectedOption2: selectedOption2,
+        last_response: last_response,
+        last_prompt: last_prompt,
+      })
+    })
 
-  
+    clearInterval(loadInterval)
+    messageDiv.innerHTML = '';
 
-  clearInterval(loadInterval)
-  messageDiv.innerHTML = '';
+    if(response.ok){
+      const data = await response.json();
+      const parsedData = data.bot
+        .trim()
+        // .replace(/\n/g, '')
+        // .replace(/\\n\\n/g, '');
 
-  if(response.ok){
-    const data = await response.json();
-    const parsedData = data.bot
-      .trim()
-      // .replace(/\n/g, '')
-      // .replace(/\\n\\n/g, '');
-
-    const sourceData = data.source_documents
-    .join(", ")
-    .trim()
-    .replace(/\n/g, '<br />')
-    .replace(/\\n\\n/g, '<br />')
-    .replace(/\\t/g, ' ');
+      const sourceData = data.source_documents
+        .join(", ")
+        .trim()
+        .replace(/\n/g, '<br />')
+        .replace(/\\n\\n/g, '<br />')
+        .replace(/\\t/g, ' ');
 
 
-    const parsedDataContainer = document.createElement('div');
-    
-    typeText(parsedDataContainer, parsedData)
-    last_response = parsedData;
-    
-    // Add the parsed data container to the message div
-    messageDiv.appendChild(parsedDataContainer);
+      const parsedDataContainer = document.createElement('div');
 
-    // Create the "Read more" button and add it after the parsed data container
-    const showSourcesButton = document.createElement('button');
-    showSourcesButton.textContent = 'Read more...';
-    showSourcesButton.classList.add('show-sources');
-    parsedDataContainer.after(showSourcesButton);
+      typeText(parsedDataContainer, parsedData)
+      last_response = parsedData;
 
-    // Add the source documents container
-    const sourceDocumentsContainer = document.createElement('div');
-    sourceDocumentsContainer.innerHTML = sourceData;
-    sourceDocumentsContainer.classList.add('source-documents');
-    sourceDocumentsContainer.id = `source-documents-${uniqueId}`;
-    messageDiv.appendChild(sourceDocumentsContainer);
+      // Add the parsed data container to the message div
+      messageDiv.appendChild(parsedDataContainer);
 
-    // Hide the source documents container initially
-    sourceDocumentsContainer.classList.add('hidden');
+      // Create the "Read more" button and add it after the parsed data container
+      const showSourcesButton = document.createElement('button');
+      showSourcesButton.textContent = 'Read more...';
+      showSourcesButton.classList.add('show-sources');
+      parsedDataContainer.after(showSourcesButton);
 
-  } else {
-    const err = await response.text();
+      // Add the source documents container
+      const sourceDocumentsContainer = document.createElement('div');
+      sourceDocumentsContainer.innerHTML = sourceData;
+      sourceDocumentsContainer.classList.add('source-documents');
+      sourceDocumentsContainer.id = `source-documents-${uniqueId}`;
+      messageDiv.appendChild(sourceDocumentsContainer);
 
-    messageDiv.innerHTML = "Something went wrong"
+      // Hide the source documents container initially
+      sourceDocumentsContainer.classList.add('hidden');
 
-    alert(err)
+    } else {
+      const err = await response.text();
+
+      messageDiv.innerHTML = "Something went wrong"
+
+      alert(err)
+    }
+  } catch (error) {
+    console.error(error);
+    messageDiv.innerHTML = "Something went wrong, please try again"
+    alert(error.message);
   }
 }
+
 
 // Add a delegated event listener to the document to handle "Read more..." button clicks
 document.addEventListener('click', function(event) {
@@ -289,6 +294,9 @@ e.preventDefault();
 e.stopPropagation();
 
 menuContainer.style.display = (menuContainer.style.display === 'none') ? 'block' : 'none';
+if (usageGuide) {
+  usageGuide.style.display = 'none';
+}
 });
 
 document.addEventListener('click', (e) => {
@@ -297,7 +305,10 @@ document.addEventListener('click', (e) => {
   }
 });
 //////////
-
+const dismissButton = document.getElementById('dismiss-usage-guide');
+dismissButton.addEventListener('click', () => {
+  usageGuide.style.display = 'none';
+});
 // listens for submit
 form.addEventListener('submit', handleSubmit);
 form.addEventListener('keyup', (e) =>{

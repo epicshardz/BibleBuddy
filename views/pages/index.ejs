@@ -11,7 +11,7 @@
     <div class="gradient-overlay"></div>
     <div id="donate-button-container">
       <div id="donate-button"></div>
-      <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
+      <!-- <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
       <script>
       PayPal.Donation.Button({
       env:'production',
@@ -22,7 +22,17 @@
       title:'PayPal - The safer, easier way to pay online!',
       }
       }).render('#donate-button');
-      </script>
+      </script> -->
+      <!-- AddToAny BEGIN -->
+      <div class="share-buttons">
+        <!-- <p>Share/Save</p> -->
+        <a href="https://www.addtoany.com/add_to/facebook?linkurl=https%3A%2F%2Fbiblebuddy2.herokuapp.com%2F&amp;linkname=BibleBuddy" target="_blank"><img src="https://static.addtoany.com/buttons/facebook.svg" width="32" height="32" style="background-color:royalblue"></a>
+        <a href="https://www.addtoany.com/add_to/twitter?linkurl=https%3A%2F%2Fbiblebuddy2.herokuapp.com%2F&amp;linkname=BibleBuddy" target="_blank"><img src="https://static.addtoany.com/buttons/twitter.svg" width="32" height="32" style="background-color:#00acee"></a>
+        <!-- <a href="https://www.addtoany.com/add_to/facebook_messenger?linkurl=https%3A%2F%2Fbiblebuddy2.herokuapp.com%2F&amp;linkname=BibleBuddy" target="_blank"><img src="https://static.addtoany.com/buttons/facebook_messenger.svg" width="32" height="32" 
+          style="background-color:royalblue"></a> -->
+          
+      </div>
+        <!-- AddToAny END -->
     </div>
       
     
@@ -33,29 +43,25 @@
     <div id="app">
       <div id="chat_container"></div>
       <div id="usage-guide">
-        <p>Welcome to BibleBuddy! Our website is designed to help you find answers to your Bible-related questions 📖 quickly and easily. To get started:</p>
+        <button id="dismiss-usage-guide">Got it!</button>
+        <p>Welcome to BibleBuddy! Our website is here to help you find answers to your Bible-related questions 📖 in a quick and easy way.</p>
         <ol>
-          <li>Type your question below and click "ask" button 🤔.</li>
-          <li>BibleBuddy will search for relevant answers using the Bible as a source 🔍.</li>
-          <li>Explore the results and click "Read more" to learn more 📚.</li>
+          <li>Type your question in the box below and click the "Ask" button 🤔.</li>
+          <li>BibleBuddy will search the Bible for relevant scripture verses to help answer your question 🔍.</li>
+          <li>Your question and the relevant Bible verses will be sent to our AI to generate a response 🤖.</li>
+          <li>Explore the results and click "Read more" to learn more about the verses and their context 📚.</li>
         </ol>
       </div>
+    
+      
+      
       
       
       <form>
         
         <textarea name="prompt" rows="1" cols="1" placeholder="Ask BibleBuddy..."></textarea>
         <button type="submit"><img src="send.svg" /></button>
-        <!-- AddToAny BEGIN -->
-        <div class="share-buttons">
-          <p>Share/Save</p>
-          <a href="https://www.addtoany.com/add_to/facebook?linkurl=https%3A%2F%2Fbiblebuddy2.herokuapp.com%2F&amp;linkname=BibleBuddy" target="_blank"><img src="https://static.addtoany.com/buttons/facebook.svg" width="32" height="32" style="background-color:royalblue"></a>
-          <a href="https://www.addtoany.com/add_to/twitter?linkurl=https%3A%2F%2Fbiblebuddy2.herokuapp.com%2F&amp;linkname=BibleBuddy" target="_blank"><img src="https://static.addtoany.com/buttons/twitter.svg" width="32" height="32" style="background-color:#00acee"></a>
-          <!-- <a href="https://www.addtoany.com/add_to/facebook_messenger?linkurl=https%3A%2F%2Fbiblebuddy2.herokuapp.com%2F&amp;linkname=BibleBuddy" target="_blank"><img src="https://static.addtoany.com/buttons/facebook_messenger.svg" width="32" height="32" 
-            style="background-color:royalblue"></a> -->
-            
-        </div>
-          <!-- AddToAny END -->
+        
 
             
           

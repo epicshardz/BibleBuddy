@@ -191,7 +191,8 @@ form img {
   border: none;
   border-radius: 5px;
   padding: 10px;
-  width: 200px;
+  width: 80vw;
+  max-width: 300px;
   height: auto;
   z-index: 1;
   color: #fff;
@@ -199,23 +200,44 @@ form img {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
 }
 
 .menu-container p {
   margin-bottom: 10px;
   font-size: 18px;
+  text-align: left;
 }
 
 .menu-container select {
   margin-bottom: 10px;
   font-size: 18px;
+  max-width: 100%;
+  width: 100%;
 }
 
-.menu-container select option{
+.menu-container select option {
   margin-bottom: 3px;
   font-size: 18px;
   height: auto;
+}
+
+/* @media only screen and (max-width: 767px) and (orientation: landscape) {
+  .menu-container {
+    width: 90%;
+    font-size: 16px;
+    overflow-y: auto;
+    max-height: 80vh;
+  }
+} */
+@media screen and (orientation: landscape){
+  .menu-container {
+    width: 80%;
+    overflow-y: auto;
+    max-height: 80vh;
+  }
+  
 }
 
 .hidden {
@@ -273,13 +295,30 @@ a {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 20px;
+  padding: 10px;
   background-color: #40414F;
   color: #fff;
   z-index: 9999;
   font-size: 16px;
   line-height: 1.5;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  width: 80%;
+
+}
+#usage-guide .dismiss-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #fff;
+  color: #40414F;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
 }
 
 #usage-guide p {
@@ -295,6 +334,16 @@ a {
   margin-bottom: 10px;
 }
 
+@media screen and (orientation: landscape){
+  #usage-guide {
+    width: 80%;
+    height: 60%;
+    overflow-y: auto;
+    /* max-height: 70vh; */
+    font-size: 12px;
+  }
+  
+}
 .announcements-section {
   border: 1px solid #ddd;
   border-radius: 10px;
