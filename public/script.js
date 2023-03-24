@@ -6,7 +6,6 @@ const form = document.querySelector('form')
 const chatContainer = document.querySelector('#chat_container')
 const usageGuide = document.getElementById('usage-guide');
 let loadInterval;
-console.log('script running')
 // This function shows the ... while the Ai is loading/processing
 function loader(element){
   element.textContent = '';
@@ -117,8 +116,6 @@ const handleSubmit = async (e) => {
       const data = await response.json();
       const parsedData = data.bot
         .trim()
-        // .replace(/\n/g, '')
-        // .replace(/\\n\\n/g, '');
 
       const sourceData = data.source_documents
         .join(", ")

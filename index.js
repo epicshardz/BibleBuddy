@@ -12,10 +12,6 @@ const isProduction = process.env.NODE_ENV === 'production';
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Create a Redis client and a new Bull queue
-// const redisClient = redis.createClient(REDIS_URL);
-// const queue = new Queue('openai', REDIS_URL);
-
 app.use(express.static(path.join(__dirname, 'public'), {
   setHeaders: function(res, path) {
     if (path.endsWith('.js')) {
@@ -79,7 +75,7 @@ async function openaiWorker(job) {
 if (isProduction) {
   // Create a Redis client and a new Bull queue
   const REDIS_URL = process.env.REDIS_URL;
-  const redisClient = redis.createClient(REDIS_URL);
+  // const redisClient = redis.createClient(REDIS_URL);
   queue = new Queue('openai', REDIS_URL);
 
   // Register the worker function with Bull and process jobs from the queue
@@ -120,20 +116,7 @@ app.post('/', async (req, res) => {
 
       // Wait for the job to complete
       response = await job.finished();
-      // console.log("Response object:", response);
 
-      // const responseData = response.data; // Extract the data property from the response object
-      // // cleanedText = result.cleanedText;
-      // // result = result.result;
-      // // console.log(`Python script exited with code ${code}`);
-
-      // const cleanedText = extractStrings(responseData);
-      // const startIndex = responseData.indexOf('{');
-      // const endIndex = responseData.lastIndexOf('}');
-      // const result = responseData.substring(startIndex, endIndex + 1);
-      // const match = result.match(/{([^}]+)}/);
-      // const clean_text = match ? match[1] : '';
-      console.log('responseData:', response.clean_text);
       res.status(200).send({
         bot: response.clean_text,
         source_documents: response.cleanedText
