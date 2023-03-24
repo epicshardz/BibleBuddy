@@ -41,7 +41,7 @@ print("#######bible:", bible)
 
 
 system_template = """Use the following pieces of context to objectively answer the users question.
-If you don't know the answer, just say that you don't know, don't try to make up an answer! I repeat, only answer based on the context. If its useful, the last response you gave was {last_response}, if its not useful, just ignore I said anything about it.
+If you don't know the answer, just say that you don't know, don't try to make up an answer! I repeat, only answer based on the context. 
 ALWAYS return a scripture "SOURCES" part in your answer. The scripture "sources" part should be a reference to the verse/verses of the document from which you got your answer.
 
 Example of your response should be:
@@ -61,7 +61,6 @@ messages = [
 ]
 prompt = ChatPromptTemplate.from_messages(messages)
 
-embedding = OpenAIEmbeddings()
 
 api_key = os.environ["QDRANT_API_KEY"]
 hosturl = os.environ["QDRANT_HOST"]
@@ -75,10 +74,10 @@ vectortable = vectordb1
 qa = ChatVectorDBChain.from_llm(ChatOpenAI(
     temperature=0), vectortable, qa_prompt=prompt, return_source_documents=True)
 
-chat_history = []
+# chat_history = []
+chat_history = [(last_prompt, last_response)]
 query = text
-result = qa({"question": query, "chat_history": chat_history,
-            "last_response": last_response})
+result = qa({"question": query, "chat_history": chat_history, })
 response = result["answer"]
 
 print("{", response, "}")
