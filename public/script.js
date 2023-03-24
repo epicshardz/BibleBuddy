@@ -155,7 +155,7 @@ const handleSubmit = async (e) => {
     } else {
       const err = await response.text();
 
-      messageDiv.innerHTML = "Something went wrong"
+      messageDiv.innerHTML = "Something went wrong, please try again"
 
       console.log(err)
     }

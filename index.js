@@ -116,20 +116,23 @@ app.post('/', async (req, res) => {
       // Add the request data to the Bull queue
       const job = await queue.add(data);
       console.log(`Job ${job.id} added to queue`);
+      
 
       // Wait for the job to complete
       response = await job.finished();
+
+      const responseData = response.data; // Extract the data property from the response object
       // cleanedText = result.cleanedText;
       // result = result.result;
       // console.log(`Python script exited with code ${code}`);
 
-      const cleanedText = extractStrings(response);
-      const startIndex = response.indexOf('{');
-      const endIndex = response.lastIndexOf('}');
-      const result = response.substring(startIndex, endIndex + 1);
+      const cleanedText = extractStrings(responseData);
+      const startIndex = responseData.indexOf('{');
+      const endIndex = responseData.lastIndexOf('}');
+      const result = responseData.substring(startIndex, endIndex + 1);
       const match = result.match(/{([^}]+)}/);
       const clean_text = match ? match[1] : '';
-      console.log('Response:', clean_text);
+      console.log('responseData:', clean_text);
       res.status(200).send({
         bot: clean_text,
         source_documents: cleanedText
