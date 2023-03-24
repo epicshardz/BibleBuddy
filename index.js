@@ -120,6 +120,7 @@ app.post('/', async (req, res) => {
 
       // Wait for the job to complete
       response = await job.finished();
+      console.log("Response object:", response);
 
       const responseData = response.data; // Extract the data property from the response object
       // cleanedText = result.cleanedText;
