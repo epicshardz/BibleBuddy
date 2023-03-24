@@ -22,15 +22,25 @@ os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 os.environ["QDRANT_API_KEY"] = os.getenv("QDRANT_API_KEY")
 os.environ["QDRANT_HOST"] = os.getenv("QDRANT_HOST")
 # bring in inputs
-text = sys.argv[1]
-bible = sys.argv[2]
-denom = sys.argv[3]
-last_response = sys.argv[4]
-last_prompt = sys.argv[5]
+# text = sys.argv[1]
+# bible = sys.argv[2]
+# denom = sys.argv[3]
+# last_response = sys.argv[4]
+# last_prompt = sys.argv[5]
+
+# Parse the JSON input data
+data = json.loads(sys.argv[1])
+
+# Extract the values of the properties
+text = data['prompt']
+bible = data['selectedOption1']
+denom = data['selectedOption2']
+last_response = data['last_response']
+last_prompt = data['last_prompt']
 print("#######bible:", bible)
 
 
-system_template = """Use the following pieces of context to objectively answer the users question. 
+system_template = """Use the following pieces of context to objectively answer the users question.
 If you don't know the answer, just say that you don't know, don't try to make up an answer! I repeat, only answer based on the context. If its useful, the last response you gave was {last_response}, if its not useful, just ignore I said anything about it.
 ALWAYS return a scripture "SOURCES" part in your answer. The scripture "sources" part should be a reference to the verse/verses of the document from which you got your answer.
 
