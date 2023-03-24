@@ -220,7 +220,7 @@ BibleFolderNames.forEach(folderName => {
   const option = document.createElement('option');
   option.textContent = folderName;
   if (folderName != 'Collections') {
-    if (folderName === 'NKJV') {
+    if (folderName === 'KJV') {
       option.selected = true; // set selected to true for the KJV option
     }
     firstDropdown.appendChild(option);

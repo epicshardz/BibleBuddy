@@ -72,7 +72,7 @@ vectordb1 = Qdrant(client, collection_name,
 vectortable = vectordb1
 
 qa = ChatVectorDBChain.from_llm(ChatOpenAI(
-    temperature=0), vectortable, qa_prompt=prompt, return_source_documents=True)
+    temperature=0, max_tokens=1000), vectortable, qa_prompt=prompt, return_source_documents=True)
 
 # chat_history = []
 chat_history = [(last_prompt, last_response)]
