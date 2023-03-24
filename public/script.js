@@ -157,12 +157,12 @@ const handleSubmit = async (e) => {
 
       messageDiv.innerHTML = "Something went wrong"
 
-      alert(err)
+      console.log(err)
     }
   } catch (error) {
     console.error(error);
     messageDiv.innerHTML = "Something went wrong, please try again"
-    alert(error.message);
+    console.log(error.message);
   }
 }
 
