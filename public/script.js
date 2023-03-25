@@ -182,7 +182,7 @@ document.addEventListener('click', function(event) {
 });
 
 
-let BibleFolderNames = ["ASV","Collections","KJV","NKJV"];
+let BibleFolderNames = ["ASV","Collections","KJV","AKJV", "ACV"];
 
 let DenominationsFolderNames = ["Collections","Seventh Day Adventist"];
 ///////Create menu
