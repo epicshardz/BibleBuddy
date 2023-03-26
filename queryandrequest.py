@@ -74,8 +74,8 @@ vectortable = vectordb1
 qa = ChatVectorDBChain.from_llm(ChatOpenAI(
     temperature=0, max_tokens=1000), vectortable, qa_prompt=prompt, return_source_documents=True)
 
-# chat_history = []
-chat_history = [(last_prompt, last_response)]
+chat_history = []
+# chat_history = [(last_prompt, last_response)]
 query = text
 result = qa({"question": query, "chat_history": chat_history, })
 response = result["answer"]

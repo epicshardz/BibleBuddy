@@ -5,6 +5,7 @@ const userImageUrl = './user.svg';
 const form = document.querySelector('form')
 const chatContainer = document.querySelector('#chat_container')
 const usageGuide = document.getElementById('usage-guide');
+const refreshButton = document.getElementById('refresh-button');
 let loadInterval;
 // This function shows the ... while the Ai is loading/processing
 function loader(element){
@@ -68,6 +69,7 @@ const handleSubmit = async (e) => {
     e.preventDefault();
     if (usageGuide) {
       usageGuide.style.display = 'none';
+      refreshButtonHandler.show();
     }
 
     const data = new FormData(form);
@@ -313,3 +315,22 @@ form.addEventListener('keyup', (e) =>{
     handleSubmit(e);
   }
 })
+
+class RefreshButton {
+  constructor(button) {
+    this.button = button;
+    this.addEventListeners();
+  }
+  
+  addEventListeners() {
+    this.button.addEventListener('click', () => {
+      location.reload();
+    });
+  }
+  
+  show() {
+    this.button.style.display = 'block';
+  }
+}
+
+const refreshButtonHandler = new RefreshButton(refreshButton);

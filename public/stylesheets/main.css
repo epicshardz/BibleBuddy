@@ -376,3 +376,15 @@ a {
 .discord-link {
   color: #ffffff; /* or any other bright color you prefer */
 }
+
+.refresh-button {
+  background-color: #007bff;
+  border: none;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 10px;
+  display: none;
+}
