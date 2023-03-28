@@ -1,7 +1,7 @@
 # BibleBuddy
 
 BibleBuddy is an AI-powered chatbot that can answer your Bible-related questions using the OpenAI ChatGPT API.
-Join our Discord: https://discord.gg/xM7YXnKr
+Join our Discord: https://discord.gg/BYGtb7swfe
 
 ## Features
 
@@ -26,7 +26,7 @@ Join our Discord: https://discord.gg/xM7YXnKr
 3. Ask your Bible-related questions and get answers from the AI!
 
 ## Deployment
-1. ....See deployment in github right side. Will update with instuctions soon.
+1. Checkout https://www.biblebuddy.ai/
 
 ## Creating a database
 
