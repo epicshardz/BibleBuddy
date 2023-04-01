@@ -35,10 +35,14 @@ data = json.loads(sys.argv[1])
 text = data['prompt']
 bible = data['selectedOption1']
 denom = data['selectedOption2']
+modelselection = data['selectedOption3']
 last_response = data['last_response']
 last_prompt = data['last_prompt']
-print("#######bible:", bible)
-
+# print("#######bible:", bible)
+modelname = "gpt-3.5-turbo"
+if modelselection == "Slow and quality Answers - GPT-4":
+    modelname = "gpt-4"
+print("#######model:", modelselection, 'modelname:', modelname)
 
 system_template = """Use the following pieces of context to objectively answer the users question.
 If you don't know the answer, just say that you don't know, don't try to make up an answer! I repeat, only answer based on the context. 
@@ -72,7 +76,7 @@ vectordb1 = Qdrant(client, collection_name,
 vectortable = vectordb1
 
 qa = ChatVectorDBChain.from_llm(ChatOpenAI(
-    temperature=0, max_tokens=1000), vectortable, qa_prompt=prompt, return_source_documents=True)
+    temperature=0, max_tokens=1000, model_name=modelname), vectortable, qa_prompt=prompt, return_source_documents=True)
 
 chat_history = []
 # chat_history = [(last_prompt, last_response)]

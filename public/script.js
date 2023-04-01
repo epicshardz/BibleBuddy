@@ -95,7 +95,9 @@ const handleSubmit = async (e) => {
     const selectedOption1 = option1.options[option1.selectedIndex].text;
     const option2 = document.querySelector(".second-dropdown");
     const selectedOption2 = option2.options[option2.selectedIndex].text;
-
+    const option3 = document.querySelector(".third-dropdown");
+    const selectedOption3 = option3.options[option3.selectedIndex].text;
+    
     const response = await fetch(config.serverUrl, {
       method: 'POST',
       headers: {
@@ -106,6 +108,7 @@ const handleSubmit = async (e) => {
         prompt: data.get('prompt'),
         selectedOption1: selectedOption1,
         selectedOption2: selectedOption2,
+        selectedOption3: selectedOption3,
         last_response: last_response,
         last_prompt: last_prompt,
       })
@@ -250,6 +253,25 @@ DenominationsFolderNames.forEach(folderName => {
 
 // Add the second dropdown to the menu container
 menuContainer.appendChild(secondDropdown);
+
+
+
+const thirdDropdown = document.createElement('select');
+thirdDropdown.classList.add('third-dropdown');
+
+const fastOption = document.createElement('option');
+fastOption.textContent = 'Fast Answers - GPT-3';
+fastOption.selected = true;
+thirdDropdown.appendChild(fastOption);
+
+const slowOption = document.createElement('option');
+slowOption.textContent = 'Slow and quality Answers - GPT-4';
+thirdDropdown.appendChild(slowOption);
+
+menuContainer.appendChild(thirdDropdown);
+
+
+
 
 // Create the announcements section
 const announcementsSection = document.createElement('div');

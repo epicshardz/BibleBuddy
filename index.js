@@ -92,9 +92,10 @@ app.post('/', async (req, res) => {
     const input = req.body.prompt;
     const selectedOption1 = req.body.selectedOption1;
     const selectedOption2 = req.body.selectedOption2;
+    const selectedOption3 = req.body.selectedOption3;
     const last_response = req.body.last_response;
     const last_prompt = req.body.last_prompt;
-
+    console.log("selected model: ", selectedOption3)
     console.log('prompt: ', input);
     console.log('last_response: ', last_response);
 
@@ -102,6 +103,7 @@ app.post('/', async (req, res) => {
       prompt: input,
       selectedOption1: selectedOption1,
       selectedOption2: selectedOption2,
+      selectedOption3: selectedOption3,
       last_response: last_response,
       last_prompt: last_prompt
     };
@@ -138,7 +140,9 @@ app.post('/', async (req, res) => {
 
       pyProg.on('close', (code) => {
         console.log(`Python script exited with code ${code}`);
+        console.log("full response:", response)
         const cleanedText = extractStrings(response);
+        // console.log('cleanedText:', cleanedText);
         const startIndex = response.indexOf('{');
         const endIndex = response.lastIndexOf('}');
         const result = response.substring(startIndex, endIndex + 1);
