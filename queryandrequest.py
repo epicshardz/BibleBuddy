@@ -1,3 +1,9 @@
+import time
+import threading
+from dotenv import load_dotenv
+from langchain.chains import ChatVectorDBChain
+import json
+import sys
 from langchain.prompts.chat import (
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
@@ -11,22 +17,13 @@ from langchain.vectorstores import Qdrant
 from qdrant_client import QdrantClient
 
 import os
-import sys
-import json
-from langchain.chains import ChatVectorDBChain
-from dotenv import load_dotenv
+os.environ['PYTHONIOENCODING'] = 'utf-8'
 
 # Load environment variables from .env file
 load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 os.environ["QDRANT_API_KEY"] = os.getenv("QDRANT_API_KEY")
 os.environ["QDRANT_HOST"] = os.getenv("QDRANT_HOST")
-# bring in inputs
-# text = sys.argv[1]
-# bible = sys.argv[2]
-# denom = sys.argv[3]
-# last_response = sys.argv[4]
-# last_prompt = sys.argv[5]
 
 # Parse the JSON input data
 data = json.loads(sys.argv[1])
@@ -38,11 +35,11 @@ denom = data['selectedOption2']
 modelselection = data['selectedOption3']
 last_response = data['last_response']
 last_prompt = data['last_prompt']
-# print("#######bible:", bible)
+
 modelname = "gpt-3.5-turbo"
 if modelselection == "Slow and quality Answers - GPT-4":
     modelname = "gpt-4"
-print("#######model:", modelselection, 'modelname:', modelname)
+# print("#######model:", modelselection, 'modelname:', modelname)
 
 system_template = """Use the following pieces of context to objectively answer the users question.
 If you don't know the answer, just say that you don't know, don't try to make up an answer! I repeat, only answer based on the context. 
@@ -81,8 +78,54 @@ qa = ChatVectorDBChain.from_llm(ChatOpenAI(
 # chat_history = []
 chat_history = [(last_prompt, last_response)]
 query = text
-result = qa({"question": query, "chat_history": chat_history, })
+# result = qa({"question": query, "chat_history": chat_history, })
+
+
+# threading for stay alive call
+
+# A function to send periodic stay-alive signals
+
+def send_stay_alive():
+    stay_alive_signal = '{{{{stay_alive}}}}'
+    while not api_call_completed:
+        print(stay_alive_signal, flush=True)
+        time.sleep(15)  # Send stay-alive signal every 5 seconds
+
+
+# Wrap the API call in a function
+result = ''
+
+
+def make_api_call():
+    global api_call_completed
+    global result
+    try:
+        result = qa(
+            {"question": query, "chat_history": chat_history})
+    except Exception as e:
+        print(f"An error occurred during the API call: {e}")
+    finally:
+        api_call_completed = True
+    # Handle the result here
+
+
+# Set up and start the stay-alive thread
+api_call_completed = False
+stay_alive_thread = threading.Thread(target=send_stay_alive)
+stay_alive_thread.start()
+
+# Call the API
+make_api_call()
+
+# Wait for the stay-alive thread to finish
+stay_alive_thread.join()
+
+##########
+
+
 response = result["answer"]
 
-print("{", response, "}")
-print(result['source_documents'])
+print("{{{{answer}}}}", response, "{{{/answer}}}}")
+for doc in result['source_documents']:
+    print(
+        f"[Document(page_content='{doc.page_content.encode('utf-8')}', lookup_str='', metadata={doc.metadata}, lookup_index=0)]")

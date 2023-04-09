@@ -25,12 +25,14 @@ body {
 
 #chat_container {
   padding-top: 60px;
-  flex: 1;
-  width: 100%;
-  height: 100%;
+  /* flex: 1; */
+  width: 80%;
+  /* max-width: calc(100% - 320px); Assuming sidebar width is 320px */
+  /* width: 80%; */
+  /* height: 80%; */
   overflow-y: scroll;
 
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
   gap: 10px;
 
@@ -39,6 +41,8 @@ body {
 
   padding-bottom: 20px;
   scroll-behavior: smooth;
+  max-height: calc(100vh - 230px);
+  padding-left: 25px;
 }
 
 @media (max-width: 767px) {
@@ -54,15 +58,22 @@ body {
 .wrapper {
   width: 100%;
   padding: 15px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 20px;
+  width: -webkit-fill-available;
 }
 
 .ai {
   background: #40414F;
+  /* border: 1px solid #ddd; */
+
 }
 
 .chat {
   width: 100%;
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
 
   display: flex;
@@ -98,7 +109,7 @@ body {
   /* display: flex; */
   /* align-items: center; */
   color: #dcdcdc;
-  font-size: 20px;
+  font-size: 1rem;
 
   max-width: 100%;
   overflow-x: scroll;
@@ -122,7 +133,7 @@ body {
 
 form {
   width: 100%;
-  max-width: 1280px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 10px;
   background: #40414F;
@@ -131,19 +142,28 @@ form {
   display: flex;
   flex-direction: row;
   gap: 10px;
+  position: absolute;
+  bottom: 0;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 20px;
+  width: -webkit-fill-available;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
 }
 
 textarea {
   width: 100%;
+  height: 130px;
 
   color: #fff;
-  font-size: 18px;
+  font-size: 1rem;
 
   padding: 10px;
   background: transparent;
   border-radius: 5px;
   border: none;
   outline: none;
+
 }
 
 button {
@@ -187,40 +207,54 @@ form img {
 
 
 .menu-container {
-  position: absolute;
+  /* position: absolute; */
   background-color: #40414F;
   border: none;
   border-radius: 5px;
   padding: 10px;
   width: 80vw;
-  max-width: 300px;
+  max-width: 240px;
   height: auto;
   z-index: 1;
   color: #fff;
-  font-size: 18px;
+  font-size: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: normal;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  padding-top: 50px; 
+  /* border: 1px solid #ddd; */
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 20px;
+  /* width: -webkit-fill-available; */
 }
 
 .menu-container p {
   margin-bottom: 10px;
-  font-size: 18px;
+  font-size: 1rem;
   text-align: left;
 }
 
 .menu-container select {
   margin-bottom: 10px;
-  font-size: 18px;
+  font-size: 1rem;
   max-width: 100%;
   width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 20px;
+  width: -webkit-fill-available;
+  bottom: 0;
+  /* position: absolute; */
+  margin: 5px;
 }
 
 .menu-container select option {
   margin-bottom: 3px;
-  font-size: 18px;
+  font-size: 1rem;
   height: auto;
 }
 
@@ -300,7 +334,7 @@ a {
   background-color: #40414F;
   color: #fff;
   z-index: 1;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.5;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
   /* width: 80%; */
@@ -314,7 +348,7 @@ a {
   color: #40414F;
   border: none;
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   border-radius: 10px;
@@ -371,6 +405,10 @@ a {
   border-radius: 10px;
   padding: 10px;
   margin-top: 20px;
+  width: -webkit-fill-available;
+  bottom: 0;
+  /* position: absolute; */
+  margin: 5px;
 }
 
 .discord-link {
@@ -387,4 +425,61 @@ a {
   transition: background-color 0.3s ease;
   margin-bottom: 10px;
   display: none;
+}
+
+.code-block {
+  display: block;
+  background-color: #000000;
+  padding: 20px;
+  border-radius: 5px;
+  font-family: 'Courier New', monospace;
+  white-space: pre-wrap;
+  color: #ffffff;
+  padding-bottom: 45px;
+  
+}
+.code-block pre {
+  margin: 0;
+  /* position: relative; */
+}
+
+.copy-button {
+  display: block;
+  /* position: absolute; */
+  top: 0;
+  right: 0;
+  background-color: #606060;
+  padding: 5px;
+  border-radius: 5px;
+  font-family: 'Courier New', monospace;
+  white-space: pre-wrap;
+  color: #ffffff;
+  float: right;
+}
+
+
+.notification {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+#main-layout-and-sidebar {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: flex-start;
+  /* max-width: 1280px; */
+  margin: 0 auto;
+  padding: 10px;
+  overflow: hidden;
+  width: 100%;
 }
