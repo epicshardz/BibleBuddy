@@ -10,7 +10,7 @@ const REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
 const isProduction = process.env.NODE_ENV === 'production';
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 6001;
 
 app.use(express.static(path.join(__dirname, 'public'), {
   setHeaders: function(res, path) {
