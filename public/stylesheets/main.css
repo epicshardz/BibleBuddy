@@ -425,6 +425,8 @@ a {
   transition: background-color 0.3s ease;
   margin-bottom: 10px;
   display: none;
+  position: absolute;
+  bottom: 145px;
 }
 
 .code-block {
