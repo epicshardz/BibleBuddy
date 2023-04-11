@@ -41,7 +41,7 @@ body {
 
   padding-bottom: 20px;
   scroll-behavior: smooth;
-  max-height: calc(100vh - 230px);
+  max-height: calc(100vh - 270px);
   padding-left: 25px;
 }
 
@@ -133,7 +133,7 @@ body {
 
 form {
   width: 100%;
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 10px;
   background: #40414F;
@@ -143,7 +143,7 @@ form {
   flex-direction: row;
   gap: 10px;
   position: absolute;
-  bottom: 0;
+  bottom: 65px;
   border-radius: 10px;
   padding: 10px;
   margin-top: 20px;
@@ -201,7 +201,7 @@ form img {
   left: 0;
   right: 0;
   height: 60px;
-  background-image: linear-gradient(to bottom, rgba(52, 53, 65, 1), rgba(52, 53, 65, 0.3), rgba(52, 53, 65, 0));
+  background-image: linear-gradient(to bottom, rgba(26, 24, 33, 1), rgba(26, 24, 33, 0.5), rgba(26, 24, 33, 0));
   z-index: 999;
 }
 
@@ -215,7 +215,7 @@ form img {
   width: 80vw;
   max-width: 240px;
   height: auto;
-  z-index: 1;
+  z-index: 99999;
   color: #fff;
   font-size: 1rem;
   display: flex;
@@ -423,10 +423,10 @@ a {
   border-radius: 0.25rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   display: none;
   position: absolute;
-  bottom: 145px;
+  bottom: 221px;
 }
 
 .code-block {
@@ -484,4 +484,19 @@ a {
   padding: 10px;
   overflow: hidden;
   width: 100%;
+}
+
+footer {
+  background-color: #1A1821;
+  color: #ffffff;
+  text-align: center;
+  padding: 15px;
+  margin-top: 20px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+footer p {
+  margin: 0;
+  padding: 0;
 }

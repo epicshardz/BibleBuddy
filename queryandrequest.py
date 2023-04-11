@@ -74,7 +74,7 @@ embeddings = OpenAIEmbeddings()
 vectordb1 = Qdrant(client, collection_name,
                    embedding_function=embeddings.embed_query)
 vectortable = vectordb1
-# qa = ConversationalRetrievalChain.from_llm(OpenAI(temperature=0), vectorstore.as_retriever())
+
 qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(
     temperature=0, max_tokens=1000, model_name=modelname), vectortable.as_retriever(), qa_prompt=prompt, return_source_documents=True)
 

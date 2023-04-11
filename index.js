@@ -9,6 +9,7 @@ const isHeroku = process.env.NODE_ENV === 'production' && process.env.DYNO;
 const pythonPath = isHeroku ? '/usr/bin/python' : 'C:/Python310/python.exe';
 const REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
 const isProduction = process.env.NODE_ENV === 'production';
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 6001;
@@ -17,7 +18,39 @@ const bannedIPs = new Set([
   '123.45.67.89',
   '98.76.54.32',
   '90.39.50.191',
+  '83.233.221.192',
 ]);
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+
+// Add your MongoDB connection string here
+const uri = process.env.MONGODB_URI;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+
+
+async function storeResult(userIP, prompt, result) {
+  try {
+    await client.connect();
+
+    const collection = client.db("querys").collection("records");
+
+    const entry = {
+      userIP,
+      prompt,
+      result,
+      timestamp: new Date()
+    };
+
+    await collection.insertOne(entry);
+    console.log("Stored result in MongoDB");
+  } catch (err) {
+    console.error("Error storing result in MongoDB:", err);
+  } finally {
+    await client.close();
+  }
+}
+
 
 app.use(express.static(path.join(__dirname, 'public'), {
   setHeaders: function(res, path) {
@@ -30,6 +63,10 @@ app.use(express.static(path.join(__dirname, 'public'), {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.get('/', (req, res) => res.render('pages/index'));
+
+app.get('/page/privacy', (req, res) => {
+  res.render('pages/privacy');
+});
 
 app.use(express.json());
 
@@ -56,7 +93,7 @@ function extractStrings(response) {
         const hyperlink = hyperlinkMatch[0].replace(/\.txt$/, '');
         texts.push(`<a href="${hyperlink}" target="_blank">${hyperlink}</a><br>${text}`);
       } else {
-    texts.push(text);
+        texts.push(text);
       }
     } else {
       texts.push(text);
@@ -114,6 +151,7 @@ async function openaiWorker(job, ws) { // Add ws as a separate argument
       //   }
       // });
       ws.send(JSON.stringify({ type: 'result', responseObj }));
+      storeResult(ws.ip, data.prompt, responseObj.clean_text);
       resolve(responseObj);
     });
   });
@@ -241,7 +279,6 @@ wss.on('connection', (_ws, req) => {
           console.log(`Python script exited with code ${code}`);
           const answerStartDelimiter = '{{{{answer}}}}';
           const answerEndDelimiter = '{{{/answer}}}}';
-          // console.log("Full Response::::",response)
           const cleanedText = extractStrings(response);
           // console.log('Full response::', response)
           const startIndex = response.indexOf(answerStartDelimiter);
@@ -252,6 +289,7 @@ wss.on('connection', (_ws, req) => {
 
           // Send the response back to the client
           ws.send(JSON.stringify({ type: 'result', clean_text, cleanedText }));
+          storeResult(ws.ip, requestData.prompt, clean_text);
           // const targetIP = req.socket.remoteAddress; // Use the request's IP address as the target
 
           // // Send the response to all connected clients
@@ -307,7 +345,7 @@ app.post('/', async (req, res) => {
       // Add the request data to the Bull queue
       const job = await queue.add(data);
       console.log(`Job ${job.id} added to queue`);
-
+      
       // Wait for the worker to finish processing
       const response = await job.finished(null, ws); // Pass the WebSocket connection
 
@@ -322,7 +360,7 @@ app.post('/', async (req, res) => {
     } else {
       // Process the request directly without using the queue
       const pyProg = spawn(pythonPath, ['./queryandrequest.py', JSON.stringify(data)]);
-
+      
       let response = '';
 
       const stayAliveDelimiter = '{{{{stay_alive}}}}';
@@ -368,7 +406,7 @@ app.post('/', async (req, res) => {
         });
       });
     }
-
+    
   } catch (error) {
     console.error(error);
     res.status(500).send(error || 'Something went wrong');
