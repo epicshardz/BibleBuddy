@@ -15,7 +15,7 @@ from langchain.chains import VectorDBQAWithSourcesChain
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Qdrant
 from qdrant_client import QdrantClient
-
+from langchain.chains import ConversationalRetrievalChain
 import os
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 
@@ -71,12 +71,12 @@ embeddings = OpenAIEmbeddings()
 vectordb1 = Qdrant(client, collection_name,
                    embedding_function=embeddings.embed_query)
 vectortable = vectordb1
-
-qa = ChatVectorDBChain.from_llm(ChatOpenAI(
-    temperature=0, max_tokens=1000, model_name=modelname), vectortable, qa_prompt=prompt, return_source_documents=True)
+# qa = ConversationalRetrievalChain.from_llm(OpenAI(temperature=0), vectorstore.as_retriever())
+qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(
+    temperature=0, max_tokens=1000, model_name=modelname), vectortable.as_retriever(), qa_prompt=prompt, return_source_documents=True)
 
 # chat_history = []
-chat_history = [(last_prompt, last_response)]
+chat_history = [(last_response, last_prompt)]
 query = text
 # result = qa({"question": query, "chat_history": chat_history, })
 
