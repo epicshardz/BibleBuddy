@@ -105,6 +105,7 @@ function prepareTextBlocks(content) {
 let chat_history = [];
 let last_response = "";
 let last_prompt = ""
+let current_prompt = ""
 let socket;
 
 // Connect to WebSocket server
@@ -181,7 +182,7 @@ function handleSubmit(e) {
     const data = new FormData(form);
 
     //user's chatStripe
-    last_prompt = data.get('prompt').replace(/\\n\\n/g, '')
+    current_prompt = data.get('prompt').replace(/\\n\\n/g, '')
     chatContainer.innerHTML += chatStrip(false, data.get('prompt'));
 
     form.reset()
@@ -196,6 +197,8 @@ function handleSubmit(e) {
     const messageDiv = document.getElementById(uniqueId);
     if (data.get('prompt').length < 5){
       messageDiv.innerHTML = "I'm sorry, I don't understand what you're asking. Can you please provide a specific question?"
+      last_prompt = ""
+      last_response = ""
       isLoading = false;
       return;
     }
@@ -230,6 +233,8 @@ function handleSubmit(e) {
     messageDiv.innerHTML = "Something went wrong, please try again"
     console.log(error.message);
     isLoading = false; // add this line to set isLoading to true
+    last_response = "";    
+    last_prompt = ""
   }
 }
 
@@ -271,7 +276,7 @@ function handleMessage(msg) {
     const parsedDataContainer = document.createElement('div');
 
     typeText(parsedDataContainer, parsedData)
-    last_response = parsedData;
+    // last_response = parsedData;
 
     // Add the parsed data container to the message div
     messageDiv.appendChild(parsedDataContainer);
@@ -294,10 +299,13 @@ function handleMessage(msg) {
 
     // Update last_response
     last_response = parsedData;    
+    last_prompt = current_prompt
   } else {
 
         messageDiv.innerHTML = "Something went wrong, please try again"
         isLoading = false; // add this line to set isLoading to true
+        last_response = "";    
+        last_prompt = ""
         // console.log(err)
   }
 

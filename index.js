@@ -241,6 +241,7 @@ wss.on('connection', (_ws, req) => {
           console.log(`Python script exited with code ${code}`);
           const answerStartDelimiter = '{{{{answer}}}}';
           const answerEndDelimiter = '{{{/answer}}}}';
+          // console.log("Full Response::::",response)
           const cleanedText = extractStrings(response);
           // console.log('Full response::', response)
           const startIndex = response.indexOf(answerStartDelimiter);
