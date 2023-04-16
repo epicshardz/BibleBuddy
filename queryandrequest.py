@@ -76,7 +76,7 @@ vectordb1 = Qdrant(client, collection_name,
 vectortable = vectordb1
 
 qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(
-    temperature=0, max_tokens=1000, model_name=modelname), vectortable.as_retriever(), qa_prompt=prompt, return_source_documents=True)
+    temperature=0, max_tokens=1000, model_name=modelname, max_retries=12, request_timeout=60*3), vectortable.as_retriever(), qa_prompt=prompt, return_source_documents=True)
 
 # chat_history = []
 chat_history = [(last_response, last_prompt)]
@@ -107,7 +107,8 @@ def make_api_call():
         result = qa(
             {"question": query, "chat_history": chat_history, "bible": bible})
     except Exception as e:
-        print(f"An error occurred during the API call: {e}")
+        print("{{{{answer}}}}",
+              f"An error occurred during the API call: {e}", "{{{/answer}}}}")
     finally:
         api_call_completed = True
     # Handle the result here

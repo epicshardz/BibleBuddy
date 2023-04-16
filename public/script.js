@@ -251,24 +251,32 @@ function handleMessage(msg) {
 
   if (data.type === 'result') {
     const blockRegex = /```([\s\S]*?)```/g;
-    
-    // const formattedContent = prepareTextBlocks(clean_text);
-    // const parsedData = clean_text
-    //   .replace(blockRegex, '<div class="code-block"><pre>$1</pre></div>');
+
     const parsedData = clean_text.replace(blockRegex, '<div class="code-block"><pre>$1</pre><button class="copy-button">Copy Code</button></div>');
 
     console.log('cleanedText', cleanedText)
     const sourceData = cleanedText.toString()
-      .trim()
-      .replace(/\s+/g, ' ')
-      .replace(/[^\x20-\x7E]/gmi, '')
-      .replace(/\u00A0/g, '')
-      .replace(/\n+/g, '\n')
-      .replace(/\n/g, '<br />')
-      .replace(/\\n\\n/g, '<br />')
-      .replace(/\\t/g, ' ')
-      .replace(/,(?=<a href)/g, ',<br /><a href')
-      .replace(/b'|b"/g, '<br />• ');
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/\\s+/g, ' ')
+    .replace(/[^\x20-\x7E]/gmi, '')
+    .replace(/\u00A0/g, '')
+    .replace(/\n+/g, '\n')
+    .replace(/\n/g, '<br />')
+    .replace(/\\n\\n/g, '<br />')
+    .replace(/\\t/g, ' ')
+    .replace(/,(?=<a href)/g, ',<br /><a href')
+    .replace(/b'|b"/g, '<br />• ')
+    .replace(/\\r\\n/g, ' ')
+    .replace(/\\xe2\\x80\\x9c/g, '\"') // Left double quotation mark
+    .replace(/\\xe2\\x80\\x9d/g, '\"') // Right double quotation mark
+    .replace(/\\xe2\\x80\\x98/g, '\'') // Left single quotation mark
+    .replace(/\\xe2\\x80\\x99/g, '\'') // Right single quotation mark
+    .replace(/[\u201C\u201D\u201E\u201F\u2033\u2036\u00AB\u00BB\u300C\u300D\u301D\u301E\u301F\uFF02]/g, '\"');
+
+
+
+  
 
 
     
@@ -359,7 +367,7 @@ document.addEventListener('click', function(event) {
 });
 
 
-let BibleFolderNames = ["ASV","Collections","KJV","AKJV", "ACV"];
+let BibleFolderNames = ["ASV","Collections","KJV","AKJV", "ACV", "NETBible"];
 
 let DenominationsFolderNames = ["Collections","Seventh Day Adventist"];
 ///////Create menu

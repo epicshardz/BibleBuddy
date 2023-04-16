@@ -22,7 +22,7 @@ Join our Discord: https://discord.gg/BYGtb7swfe
 ## Local Usage
 
 1. Start it up: `npm start`
-2. Open your web browser and navigate to `http://localhost:5001`
+2. Open your web browser and navigate to `http://localhost:6001`
 3. Ask your Bible-related questions and get answers from the AI!
 
 ## Deployment
