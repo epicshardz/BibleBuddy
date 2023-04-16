@@ -272,6 +272,7 @@ function handleMessage(msg) {
     .replace(/\\xe2\\x80\\x9d/g, '\"') // Right double quotation mark
     .replace(/\\xe2\\x80\\x98/g, '\'') // Left single quotation mark
     .replace(/\\xe2\\x80\\x99/g, '\'') // Right single quotation mark
+    .replace(/\\xe2\\x80\\x94/g, '—')
     .replace(/[\u201C\u201D\u201E\u201F\u2033\u2036\u00AB\u00BB\u300C\u300D\u301D\u301E\u301F\uFF02]/g, '\"');
 
 
