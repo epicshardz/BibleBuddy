@@ -445,19 +445,47 @@ a {
   /* position: relative; */
 }
 
-.copy-button {
-  display: block;
-  /* position: absolute; */
-  top: 0;
-  right: 0;
-  background-color: #606060;
-  padding: 5px;
-  border-radius: 5px;
-  font-family: 'Courier New', monospace;
-  white-space: pre-wrap;
-  color: #ffffff;
+.button-container {
   float: right;
 }
+
+.copy-button {
+  display: block;
+  background-color: #606060;
+  line-height: 1.5;
+  padding: 5px;
+  margin-bottom: 5px; /* Optional: Add margin between the buttons */
+  border-radius: 5px;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  white-space: pre-wrap;
+  color: #ffffff;
+}
+
+.share-button {
+  display: block;
+  background-color: #4267B2;
+  color: #ffffff;
+  padding: 5px;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+.share-button:hover {
+  background-color: #385898;
+}
+
+.share-button:active {
+  background-color: #29487d;
+}
+
 
 
 .notification {

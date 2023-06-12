@@ -252,7 +252,10 @@ function handleMessage(msg) {
   if (data.type === 'result') {
     const blockRegex = /```([\s\S]*?)```/g;
 
-    const parsedData = clean_text.replace(blockRegex, '<div class="code-block"><pre>$1</pre><button class="copy-button">Copy Code</button></div>');
+    // const parsedData = clean_text.replace(blockRegex, '<div class="code-block"><pre>$1</pre><button class="copy-button">Copy Text</button></div>');
+
+    const parsedData = clean_text + '<div class="button-container"><button class="copy-button" onclick="copyCode(event, this)">Copy Text</button><button class="share-button" onclick="shareToFacebook(event, this)">Share on Facebook</button></div>';
+
 
     console.log('cleanedText', cleanedText)
     const sourceData = cleanedText.toString()
@@ -322,7 +325,7 @@ function handleMessage(msg) {
 
 function copyCode(event, buttonElement) {
   event.preventDefault();
-  const codeBlock = buttonElement.previousElementSibling;
+  const codeBlock = buttonElement.parentElement.parentElement;
   const range = document.createRange();
   range.selectNode(codeBlock);
   window.getSelection().removeAllRanges();
@@ -332,7 +335,7 @@ function copyCode(event, buttonElement) {
   
   const notification = document.createElement('div');
   notification.classList.add('notification');
-  notification.textContent = 'Code copied to clipboard!';
+  notification.textContent = 'Text copied to clipboard!';
   document.body.appendChild(notification);
   
   setTimeout(() => {
@@ -343,6 +346,16 @@ function copyCode(event, buttonElement) {
   }, 1000);
 }
 
+function shareToFacebook(event, buttonElement) {
+  event.preventDefault();
+  const divElement = buttonElement.parentElement.parentElement;
+  const text = divElement.textContent.trim();
+  const reference = "Answered by BibleBuddy.ai";
+
+  const sharedText = `${text}\n\n${reference}`;
+  const url = `https://www.facebook.com/sharer/sharer.php?u=&quote=${encodeURIComponent(sharedText)}`;
+  window.open(url, '_blank');
+}
 
 
 // Add a delegated event listener to the document to handle "Read more..." button clicks
@@ -364,6 +377,11 @@ document.addEventListener('click', function(event) {
     event.preventDefault();
     const copyButton = event.target;
     copyCode(event, copyButton);
+  }
+  if (event.target.matches('.share-button')) {
+    event.preventDefault();
+    const shareButton = event.target;
+    shareToFacebook(event, shareButton);
   }
 });
 
