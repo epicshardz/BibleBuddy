@@ -353,9 +353,12 @@ function shareToFacebook(event, buttonElement) {
   const reference = "Answered by BibleBuddy.ai";
 
   const sharedText = `${text}\n\n${reference}`;
-  const url = `https://www.facebook.com/sharer/sharer.php?u=&quote=${encodeURIComponent(sharedText)}`;
-  window.open(url, '_blank');
+  const encodedSharedText = encodeURIComponent(sharedText);
+  
+  const shareURL = `https://www.facebook.com/sharer/sharer.php?u=&quote=${encodedSharedText}`;
+  window.open(shareURL, '_blank');
 }
+
 
 
 // Add a delegated event listener to the document to handle "Read more..." button clicks
