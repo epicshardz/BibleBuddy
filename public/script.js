@@ -355,12 +355,11 @@ function shareToFacebook(event, buttonElement) {
   const sharedText = `${text}\n\n${reference}`;
   const encodedSharedText = encodeURIComponent(sharedText);
   const baseURL = 'https://biblebuddy.ai'; // Replace with the desired URL
-  const imageURL = 'public/biblebuddylogo.png'; // Replace with the URL of your desired image
-  const encodedImageURL = encodeURIComponent(imageURL);
-  
-  const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(baseURL)}&quote=${encodedSharedText}&picture=${encodedImageURL}&hashtag=%23BibleBuddy`;
+
+  const url = `https://www.facebook.com/dialog/feed?app_id=1212850366057820&link=${encodeURIComponent(baseURL)}&redirect_uri=${encodeURIComponent(baseURL)}`;
   window.open(url, '_blank');
 }
+
 
 
 
