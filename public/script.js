@@ -401,6 +401,16 @@ const menuButton = document.getElementById('menu_button');
 // If the menu container doesn't exist, create it
 let menuContainer = document.createElement('div');
 menuContainer.classList.add('menu-container');
+
+const logoImg = document.createElement('img');
+logoImg.src = './biblebuddylogo.png';
+logoImg.classList.add('logo-img'); // Add a class for styling
+
+menuContainer.appendChild(logoImg);
+
+// Add a line break between the image and text
+menuContainer.appendChild(document.createElement('br'));
+
 // Add some text to the menu container
 const menuText = document.createElement('p');
 menuText.textContent = 'Welcome to BibleBuddy!';

@@ -469,6 +469,10 @@ a {
   background-color: #606060;
 } */
 
+.logo-img {
+  max-width: 170px; /* Adjust the desired maximum width */
+  max-height: 170px; /* Adjust the desired maximum height */
+}
 .share-button {
   display: block;
   background-color: #4267B2;
