@@ -254,8 +254,9 @@ function handleMessage(msg) {
 
     // const parsedData = clean_text.replace(blockRegex, '<div class="code-block"><pre>$1</pre><button class="copy-button">Copy Text</button></div>');
 
-    const parsedData = clean_text + '<div class="button-container"><button class="copy-button" onclick="copyCode(event, this)">Copy Text</button><button class="share-button" onclick="shareToFacebook(event, this)">Share on Facebook</button></div>';
+    // const parsedData = clean_text + '<div class="button-container"><button class="copy-button" onclick="copyCode(event, this)">Copy Text</button><button class="share-button" onclick="shareToFacebook(event, this)">Share on Facebook</button></div>';
 
+    const parsedData = clean_text + '<div class="button-container"><button class="copy-button">Copy Text</button></div>';
 
     console.log('cleanedText', cleanedText)
     const sourceData = cleanedText.toString()

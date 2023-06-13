@@ -461,6 +461,14 @@ a {
   color: #ffffff;
 }
 
+.copy-button:hover {
+  background-color: #6060607d;
+}
+
+/* .copy-button:active {
+  background-color: #606060;
+} */
+
 .share-button {
   display: block;
   background-color: #4267B2;
