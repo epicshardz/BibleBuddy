@@ -7,7 +7,9 @@ npm-debug.log
 *.dev
 .DS_Store
 qdranttesting.ipynb
+.codebuddy
 
 # Docker
 Dockerfile
 docker-compose.yml
+

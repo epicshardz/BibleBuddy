@@ -40,7 +40,7 @@ This project is entirely open source and that means anyone can contribute. Oppor
 2. Adding more Bibles
 3. Clean up existing bibles to include book in reference for NKJV and ASV.
 4. [DONE] Add Donation button, for keeping servers running
-5. Figure out how to query multiple databases with langchain, when not using an agent.
+5. Speed Improvement
 6. ....future
     
 ## Powered by OpenAI, LangChain, Qdrant, & Node.js
