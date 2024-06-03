@@ -26,30 +26,44 @@ function typeText(element, text) {
   let currentString = '';
 
   function type() {
-    currentString += text[currentIndex];
+    // Check if the current index starts with '**'
+    if (text.substring(currentIndex, currentIndex + 2) === '**') {
+      // Find the closing '**'
+      let closingIndex = text.indexOf('**', currentIndex + 2);
+      if (closingIndex !== -1) {
+        // Extract the bold text
+        let boldText = text.substring(currentIndex + 2, closingIndex);
+        // Wrap the bold text in <strong> tags
+        currentString += `<strong>${boldText}</strong>`;
+        // Update the currentIndex to after the closing '**'
+        currentIndex = closingIndex + 2;
+      } else {
+        // If no closing '**' is found, just add the '**'
+        currentString += text[currentIndex];
+        currentIndex++;
+      }
+    } else {
+      currentString += text[currentIndex];
+      currentIndex++;
+    }
+
     element.innerHTML = currentString;
-    currentIndex++;
     if (currentIndex < text.length) {
-      setTimeout(type, 20);
+      setTimeout(type, 10);
     }
   }
 
   type();
 }
 
-// This function is for generating a unique user ID
 function generateUniqueId() {
-  const timestamp = Date.now();
-  const randomNumber = Math.random();
-  const hexadecimalString = randomNumber.toString(16);
-
-  return `id-${timestamp}-${hexadecimalString}`;
+  return `id-${Date.now()}-${Math.random().toString(16)}`;
 }
 
 // This function creates separation between the chat messages
 function chatStrip (isAi, value, uniqueId) {
   return (
-    `
+      `
     <div class="wrapper ${isAi && 'ai'}">
       <div class="chat">
         <div class="profile">
@@ -116,19 +130,19 @@ function connectWebSocket() {
   } else {
     socketUrl = 'ws://' + window.location.host;
   }
-  
+
   socket = new WebSocket(socketUrl);
-  
+
   socket.addEventListener('open', () => {
     console.log('WebSocket connection established');
 
 
   });
-  
+
   socket.addEventListener('close', () => {
     console.log('WebSocket connection closed');
   });
-  
+
   socket.addEventListener('message', (event) => {
     const data = JSON.parse(event.data);
     if (data.type === 'result') {
@@ -137,14 +151,15 @@ function connectWebSocket() {
       console.log('Clean text:', clean_text);
       console.log('Source documents:', cleanedText);
       handleMessage(event)
+
       isLoading = false; // add this line to set isLoading to true
     } else if (data.type === 'stay_alive') {
       console.log('Received stay alive signal from server');
       // Handle stay alive signal
     }
-    
+
   });
-  
+
   socket.addEventListener('error', (error) => {
     console.error('WebSocket error', error);
   });
@@ -187,7 +202,7 @@ function handleSubmit(e) {
 
     form.reset()
     isLoading = true; // add this line to set isLoading to true
-    
+
     // bot's chatstripe
     uniqueId = generateUniqueId();
     chatContainer.innerHTML += chatStrip(true, " ", uniqueId);
@@ -196,7 +211,7 @@ function handleSubmit(e) {
 
     const messageDiv = document.getElementById(uniqueId);
     if (data.get('prompt').length < 5){
-      messageDiv.innerHTML = "I'm sorry, I don't understand what you're asking. Can you please provide a specific question?"
+      messageDiv.innerHTML = "Hello. How can I help you?"
       last_prompt = ""
       last_response = ""
       isLoading = false;
@@ -205,124 +220,119 @@ function handleSubmit(e) {
 
     loader(messageDiv);
 
-    // Get form data
-    const option1 = document.querySelector(".first-dropdown");
-    const selectedOption1 = option1.options[option1.selectedIndex].text;
-    const option2 = document.querySelector(".second-dropdown");
-    const selectedOption2 = option2.options[option2.selectedIndex].text;
-    const option3 = document.querySelector(".third-dropdown");
-    const selectedOption3 = option3.options[option3.selectedIndex].text;
+  const selectedOptions = {
+    selectedOption1: document.querySelector(".first-dropdown").value,
+    selectedOption2: document.querySelector(".second-dropdown").value,
+    selectedOption3: document.querySelector(".third-dropdown").value,
+  };
 
-    // Send message to WebSocket server
-    const message = JSON.stringify({
-      type: 'prompt',
-      data: {
-        prompt: data.get('prompt'),
-        selectedOption1: selectedOption1,
-        selectedOption2: selectedOption2,
-        selectedOption3: selectedOption3,
-        last_response: last_response,
-        last_prompt: last_prompt,
-      },
-    });
-    sendMessageToWebSocket(message);
+  const message = JSON.stringify({
+    type: 'prompt',
+    data: {
+      prompt: data.get('prompt'),
+      selectedOption1: document.querySelector(".first-dropdown").value,
+      selectedOption2: document.querySelector(".second-dropdown").value,
+      selectedOption3: document.querySelector(".third-dropdown").value,
+      last_response: last_response,
+      last_prompt: last_prompt,
+    },
+  });
 
-    
+  sendMessageToWebSocket(message);
   } catch (error) {
     console.error(error);
     messageDiv.innerHTML = "Something went wrong, please try again"
     console.log(error.message);
     isLoading = false; // add this line to set isLoading to true
-    last_response = "";    
+    last_response = "";
     last_prompt = ""
   }
 }
 
-function handleMessage(msg) {
 
-  clearInterval(loadInterval)
-  
+let isFirstMessage = true;
+
+function handleMessage(msg) {
   const data = JSON.parse(msg.data);
-  // data = msg
-  console.log('client response data: ',data)
+  console.log('client response data: ', data);
   const { clean_text, cleanedText } = data;
   const messageDiv = document.getElementById(uniqueId);
-  messageDiv.innerHTML = '';
 
-  if (data.type === 'result') {
-    const blockRegex = /```([\s\S]*?)```/g;
-
-    // const parsedData = clean_text.replace(blockRegex, '<div class="code-block"><pre>$1</pre><button class="copy-button">Copy Text</button></div>');
-
-    // const parsedData = clean_text + '<div class="button-container"><button class="copy-button" onclick="copyCode(event, this)">Copy Text</button><button class="share-button" onclick="shareToFacebook(event, this)">Share on Facebook</button></div>';
-
-    const parsedData = clean_text + '<div class="button-container"><button class="copy-button">Copy Text</button></div>';
-
-    console.log('cleanedText', cleanedText)
-    const sourceData = cleanedText.toString()
-    .trim()
-    .replace(/\s+/g, ' ')
-    .replace(/\\s+/g, ' ')
-    .replace(/[^\x20-\x7E]/gmi, '')
-    .replace(/\u00A0/g, '')
-    .replace(/\n+/g, '\n')
-    .replace(/\n/g, '<br />')
-    .replace(/\\n\\n/g, '<br />')
-    .replace(/\\t/g, ' ')
-    .replace(/,(?=<a href)/g, ',<br /><a href')
-    .replace(/b'|b"/g, '<br />• ')
-    .replace(/\\r\\n/g, ' ')
-    .replace(/\\xe2\\x80\\x9c/g, '\"') // Left double quotation mark
-    .replace(/\\xe2\\x80\\x9d/g, '\"') // Right double quotation mark
-    .replace(/\\xe2\\x80\\x98/g, '\'') // Left single quotation mark
-    .replace(/\\xe2\\x80\\x99/g, '\'') // Right single quotation mark
-    .replace(/\\xe2\\x80\\x94/g, '—')
-    .replace(/[\u201C\u201D\u201E\u201F\u2033\u2036\u00AB\u00BB\u300C\u300D\u301D\u301E\u301F\uFF02]/g, '\"');
-
-
-
-  
-
-
-    
-
-    const parsedDataContainer = document.createElement('div');
-
-    typeText(parsedDataContainer, parsedData)
-    // last_response = parsedData;
-
-    // Add the parsed data container to the message div
-    messageDiv.appendChild(parsedDataContainer);
-
-    // Create the "Read more" button and add it after the parsed data container
-    const showSourcesButton = document.createElement('button');
-    showSourcesButton.textContent = 'Read more...';
-    showSourcesButton.classList.add('show-sources');
-    parsedDataContainer.after(showSourcesButton);
-
-    // Add the source documents container
-    const sourceDocumentsContainer = document.createElement('div');
-    sourceDocumentsContainer.innerHTML = sourceData;
-    sourceDocumentsContainer.classList.add('source-documents');
-    sourceDocumentsContainer.id = `source-documents-${uniqueId}`;
-    messageDiv.appendChild(sourceDocumentsContainer);
-
-    // Hide the source documents container initially
-    sourceDocumentsContainer.classList.add('hidden');
-
-    // Update last_response
-    last_response = parsedData;    
-    last_prompt = current_prompt
-  } else {
-
-        messageDiv.innerHTML = "Something went wrong, please try again"
-        isLoading = false; // add this line to set isLoading to true
-        last_response = "";    
-        last_prompt = ""
-        // console.log(err)
+  // Create and clear the waiting animation container
+  if (isFirstMessage) {
+    clearInterval(loadInterval);
+    messageDiv.innerHTML = ''; // Clear the message div on the first message
+    isFirstMessage = false;
   }
 
+  if (data.type === 'result') {
+    if (clean_text) {  // Process clean_text if provided
+      const parsedDataContainer = document.createElement('div');
+      parsedDataContainer.classList.add('parsed-data-container'); // Use a class instead of an id
+
+      const parsedData = clean_text;
+
+      typeText(parsedDataContainer, parsedData); // Type text after append
+      messageDiv.appendChild(parsedDataContainer);
+
+      last_response = parsedData;
+    }
+
+    if (cleanedText) {  // Process cleanedText if provided
+      console.log('cleanedText', cleanedText);
+
+      const sourceDocumentsContainer = document.createElement('div');
+      sourceDocumentsContainer.classList.add('source-documents');
+
+      // Create a list to hold the bullet points
+      const bulletList = document.createElement('ul');
+      // bulletList.classList.add('large-bullets');
+
+
+      // Loop through the cleanedText array and add each item as a list item
+      cleanedText.forEach(text => {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `&bull; ${text}`
+            .trim()
+            .replace(/\s+/g, ' ')  // Replace multiple spaces with a single space
+            .replace(/[^\x20-\x7E]/g, '')  // Remove non-ASCII characters
+            .replace(/\u00A0/g, ' ')  // Replace non-breaking spaces
+            .replace(/\xc2\xa0/g, ' ')  // Handle escaped non-breaking spaces
+            .replace(/\n+/g, ' ')  // Replace multiple newlines with a single space
+            .replace(/\\n\\n/g, ' ')  // Replace escaped double newlines with a space
+            .replace(/\\t/g, ' ')  // Replace escaped tabs with a single space
+            .replace(/\\r\\n/g, ' ')  // Replace escaped carriage return + newline with a space
+            .replace(/\\xe2\\x80\\x9c/g, '\"')  // Left double quotation mark
+            .replace(/\\xe2\\x80\\x9d/g, '\"')  // Right double quotation mark
+            .replace(/\\xe2\\x80\\x98/g, '\'')  // Left single quotation mark
+            .replace(/\\xe2\\x80\\x99/g, '\'')  // Right single quotation mark
+            .replace(/\\xe2\\x80\\x94/g, '—');  // Em dash
+
+        bulletList.appendChild(listItem);
+      });
+
+      sourceDocumentsContainer.appendChild(bulletList);
+      messageDiv.appendChild(sourceDocumentsContainer);
+
+      const showSourcesButton = document.createElement('button');
+      showSourcesButton.textContent = 'Read more...';
+      showSourcesButton.classList.add('show-sources');
+      messageDiv.appendChild(showSourcesButton);  // Append the button to messageDiv directly
+
+      sourceDocumentsContainer.classList.add('hidden');
+      isFirstMessage = true;
+    }
+
+    last_prompt = current_prompt;  // Ensure last_prompt is set correctly
+  } else {
+    messageDiv.innerHTML = "Something went wrong, please try again";
+    isLoading = false;
+    last_response = "";
+    last_prompt = "";
+    isFirstMessage = true;
+  }
 }
+
 
 function copyCode(event, buttonElement) {
   event.preventDefault();
@@ -333,12 +343,12 @@ function copyCode(event, buttonElement) {
   window.getSelection().addRange(range);
   document.execCommand('copy');
   window.getSelection().removeAllRanges();
-  
+
   const notification = document.createElement('div');
   notification.classList.add('notification');
   notification.textContent = 'Text copied to clipboard!';
   document.body.appendChild(notification);
-  
+
   setTimeout(() => {
     notification.style.opacity = '0';
     setTimeout(() => {
@@ -362,28 +372,29 @@ function shareToFacebook(event, buttonElement) {
 }
 
 
-
-
 // Add a delegated event listener to the document to handle "Read more..." button clicks
 document.addEventListener('click', function(event) {
   if (event.target.matches('.show-sources')) {
     event.preventDefault();
     const showSourcesButton = event.target;
-    const parsedDataContainer = showSourcesButton.previousElementSibling;
-    const sourceDocumentsContainer = showSourcesButton.nextElementSibling;
-    parsedDataContainer.classList.toggle('hide');
-    sourceDocumentsContainer.classList.toggle('hidden');
-    if (showSourcesButton.textContent === 'Read more...') {
-      showSourcesButton.textContent = 'Read less...';
-    } else {
-      showSourcesButton.textContent = 'Read more...';
+    const sourceDocumentsContainer = showSourcesButton.previousElementSibling;
+
+    if (sourceDocumentsContainer) {
+      sourceDocumentsContainer.classList.toggle('hidden');
+      if (showSourcesButton.textContent === 'Read more...') {
+        showSourcesButton.textContent = 'Read less...';
+      } else {
+        showSourcesButton.textContent = 'Read more...';
+      }
     }
   }
+
   if (event.target.matches('.copy-button')) {
     event.preventDefault();
     const copyButton = event.target;
     copyCode(event, copyButton);
   }
+
   if (event.target.matches('.share-button')) {
     event.preventDefault();
     const shareButton = event.target;
@@ -392,7 +403,9 @@ document.addEventListener('click', function(event) {
 });
 
 
-let BibleFolderNames = ["ASV","Collections","KJV","AKJV", "ACV", "NETBible"];
+let BibleFolderNames = ["ASV","Collections","KJV","AKJV", "ACV"];
+// let BibleFolderNames = ["ASV","Collections","KJV","AKJV", "ACV", "NETBible"];
+
 
 let DenominationsFolderNames = ["Collections","Seventh Day Adventist"];
 ///////Create menu
@@ -420,6 +433,7 @@ menuContainer.appendChild(menuText);
 
 const instructionText = document.createElement('p');
 instructionText.textContent = 'Ask BibleBuddy any Bible-related question and receive an accurate answer in seconds!';
+instructionText.style.marginLeft = '15px'; // Adjust the value as needed
 
 // Add the text to the menu container
 menuContainer.appendChild(instructionText);
@@ -489,10 +503,17 @@ const announcementsSection = document.createElement('div');
 announcementsSection.classList.add('announcements-section');
 // Add a message to the announcements section
 const announcementsMessage = document.createElement('p');
-announcementsMessage.textContent = 'Announcements:';
-
+announcementsMessage.textContent = 'Announcements: ';
 // Add the message to the announcements section
 announcementsSection.appendChild(announcementsMessage);
+
+const AnnouncementOne = document.createElement('p');
+AnnouncementOne.textContent = 'We are excited to release a faster version of BibleBuddy!\nEnjoy!';
+
+// Add the text to the menu container
+announcementsSection.appendChild(AnnouncementOne);
+
+
 
 // Add the announcements section to the menu container
 menuContainer.appendChild(announcementsSection);
@@ -506,6 +527,7 @@ discordLink.textContent = 'Join our Discord group!';
 
 // Add the Discord group link to the announcements section
 announcementsSection.appendChild(discordLink);
+menuContainer.appendChild(announcementsSection);
 
 if (window.innerWidth > 1267) {
   menuButton.style.display = 'none';
@@ -535,16 +557,16 @@ if (window.innerWidth > 1267) {
 
   // Add a click event listener to the menu button
   menuButton.addEventListener('click', (e) => {
-  // Prevent the default behavior of the button
-  e.preventDefault();
+    // Prevent the default behavior of the button
+    e.preventDefault();
 
-  // Stop the click event from bubbling up to the document level
-  e.stopPropagation();
+    // Stop the click event from bubbling up to the document level
+    e.stopPropagation();
 
-  menuContainer.style.display = (menuContainer.style.display === 'none') ? 'block' : 'none';
-  if (usageGuide) {
-    usageGuide.style.display = 'none';
-  }
+    menuContainer.style.display = (menuContainer.style.display === 'none') ? 'block' : 'none';
+    if (usageGuide) {
+      usageGuide.style.display = 'none';
+    }
   });
 
   document.addEventListener('click', (e) => {
@@ -589,13 +611,13 @@ class RefreshButton {
     this.button = button;
     this.addEventListeners();
   }
-  
+
   addEventListeners() {
     this.button.addEventListener('click', () => {
       location.reload();
     });
   }
-  
+
   show() {
     this.button.style.display = 'block';
   }
