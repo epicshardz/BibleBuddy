@@ -37,7 +37,8 @@ class BibleBuddyQA {
         });
 
         this.qa_template = `Use the following pieces of context to try to answer the users question. Provide a complete response with sufficient explanation and bulleted points. 
-        If you don't know the answer, politely ask for clarification or a followup question! I repeat, only answer based on the context or to followup on a previous query. If the answer is in the christian bible but not in the context provided please answer using that known scripture.
+        If you don't know the answer, politely say "An answer on that cannot be found in the Bible context provided. Can you refraise the question?"! I repeat, only answer based on the context or to followup on a previous query. If the answer is in the christian bible but not in the context provided please answer using that known scripture.
+        It is against the rules to answer a question that is not explicitly in the context provided. You may politely tell the user you do not know or follow-up.
         ALWAYS return a scripture "SOURCES" part in your answer. The scripture "sources" part should be a reference to the verse/verses of the document from which you got your answer.
         
         Example of your response format should be:
