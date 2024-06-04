@@ -73,7 +73,7 @@ class BibleBuddyQA {
         return ConversationalRetrievalQAChain.fromLLM(
             new ChatOpenAI({
                 openAIApiKey: process.env.OPENAI_API_KEY,
-                temperature: 0,
+                temperature: 0.2,
                 maxTokens: maxTokens,
                 maxRetries: 6,
                 requestTimeout: 60000
