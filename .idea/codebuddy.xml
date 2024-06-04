@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CodebuddyPersistentProjectState">
+    <option name="autoFileMode" value="CURRENT_OPEN" />
+    <option name="promptHistory">
+      <list>
+        <option value="I updated my node.js app to no longer spawn a python instance. It now does everything in js. Please review my server file index.js for any required changes for running in heroku:" />
+      </list>
+    </option>
+    <option name="selectedModel" value="codebuddy:GPT4_Omni_V6" />
+    <option name="ttsEnabled" value="false" />
+  </component>
+</project>
