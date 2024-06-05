@@ -30,28 +30,54 @@ function truncateText(text, maxTokens) {
     return text;
 }
 
+const questionGenerationModel = new ChatOpenAI({
+temperature: 0,
+modelName: 'gpt-3.5-turbo',
+openAIApiKey: process.env.OPENAI_API_KEY,
+});
+
+
+
 class BibleBuddyQA {
     constructor() {
         this.model = new ChatOpenAI({
             openAIApiKey: process.env.OPENAI_API_KEY,
         });
 
-        this.qa_template = `Act like a friendly study assistant named BibleBuddy. Your job is to help answer the question based on the following rules: Provide a complete response with sufficient explanation and bulleted points. 
-        If you don't know the answer, politely say "An answer on that cannot be found in the Bible context provided. Can you refraise the question?"! I repeat, only answer based on the context or to followup on a previous query. If the answer is in the christian bible but not in the context provided please answer using that known scripture.
+        this.qa_template = `Act like a friendly study assistant named BibleBuddy. Your job is to help answer the question based on the following rules: Provide a complete response with sufficient explanation and bulleted points if necessary. 
+        If you don't know the answer, politely say "An answer on that cannot be found in the Bible context provided. Can you refraise the question?"! 
+        If the answer is in the christian bible but not in the context provided please answer using that known scripture.
+        You have some flexibility to answer the question if it can be found in the bible, just ensure not to be denomination bias or opinionated in your response.
         ALWAYS return a scripture "SOURCES" part in your answer. The scripture "sources" part should be a reference to the verse/verses of the document from which you got your answer.
         
-        Example of your response format should be:
+        Then end of your response format should be:
         
-        The answer is foo
-
         sources: xyz
         
-        Question: {question}
+        
         
         Begin!
         ----------------
-        Context:
-        {context}`;
+        {context}
+        {question}`;
+
+        this.condense_question_template_text = `Return text in the original language of the follow up question.
+            Provide known scripture versus that might help answer the Follow Up question.
+            If the Follow up question needs to be rephrased to be more biblical, please refraise it.
+            Sometimes a user may ask a vague question, its your job to make that question relatable to bible context.
+            Provide known scripture versus that might help answer the question.
+            
+            Provide your response in the following format:
+            [rephrased questions]
+            [related bible verse]
+            
+            Begin!
+            ----------------
+            Chat History: {chat_history}
+            Follow Up question: {question}
+            Standalone question:`;
+
+        this.condense_question_prompt = PromptTemplate.fromTemplate(this.condense_question_template_text)
     }
 
     async initializeVectorStore(bible) {
@@ -86,6 +112,11 @@ class BibleBuddyQA {
                 },
                 returnSourceDocuments: true,
                 // verbose: true,
+                questionGeneratorTemplate:this.condense_question_template_text,
+                rephrase_question: true,
+                questionGeneratorChainOptions: {
+                    llm: questionGenerationModel,
+                },
 
             }
         );
@@ -107,10 +138,7 @@ class BibleBuddyQA {
 
         const chatHistory = `${lastPrompt}\n${lastResponse}`;
 
-        // const res = await chain.invoke({ question, chat_history: chatHistory });
         const res = await chain.invoke({ question, chat_history: chatHistory});
-        // console.log("System Template:", this.systemTemplate);
-        // console.log("Final Prompt:", this.prompt);
 
         // Ensure that cleanedText is always an array
         const cleanedText = res.sourceDocuments.map(doc => doc.pageContent || '');
