@@ -8,8 +8,12 @@ npm-debug.log
 .DS_Store
 qdranttesting.ipynb
 .codebuddy
+.idea
 
 # Docker
 Dockerfile
 docker-compose.yml
 
+.idea/codebuddy.xml
+
+index_backup_rmdpost.js

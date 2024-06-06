@@ -49,6 +49,7 @@ class BibleBuddyQA {
         If the answer is in the christian bible but not in the context provided please answer using that known scripture.
         You have some flexibility to answer the question if it can be found in the bible, just ensure not to be denomination bias or opinionated in your response.
         ALWAYS return a scripture "SOURCES" part in your answer. The scripture "sources" part should be a reference to the verse/verses of the document from which you got your answer.
+        Return Response in English.
         
         Then end of your response format should be:
         
@@ -61,7 +62,7 @@ class BibleBuddyQA {
         {context}
         {question}`;
 
-        this.condense_question_template_text = `Return text in the original language of the follow up question.
+        this.condense_question_template_text = `Return text English.
             Provide known scripture versus that might help answer the Follow Up question.
             If the Follow up question needs to be rephrased to be more biblical, please refraise it.
             Sometimes a user may ask a vague question, its your job to make that question relatable to bible context.
