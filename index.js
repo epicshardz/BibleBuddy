@@ -1,8 +1,9 @@
 const express = require('express');
 const path = require('path');
 const Queue = require('bull');
+const { v4: uuidv4 } = require('uuid');
 const redis = require('redis');
-const WebSocket = require('ws'); // Import WebSocket library
+const WebSocket = require('ws');
 const http = require('http');
 const BibleBuddyQA = require('./conversationalQAchain.js');
 require('dotenv').config();
@@ -10,6 +11,8 @@ require('dotenv').config();
 const isHeroku = process.env.NODE_ENV === 'production' && process.env.DYNO;
 const REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
 const isProduction = process.env.NODE_ENV === 'production';
+const clients = new Map();
+const INACTIVITY_TIMEOUT = 5 * 60 * 1000; // 10 minutes
 
 const app = express();
 const PORT = process.env.PORT || 6001;
@@ -23,7 +26,6 @@ const bannedIPs = new Set([
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
-// Add your MongoDB connection string here
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -99,21 +101,25 @@ function extractStrings(response) {
     return texts;
 }
 
-async function openaiWorker(job, ws) {
+async function openaiWorker(job) {
     const data = job.data;
-
     const bibleQA = new BibleBuddyQA();
     try {
         const response = await bibleQA.getAnswer(data);
         const clean_text = response.clean_text;
         const cleanedText = response.cleanedText;
 
-        ws.send(JSON.stringify({ type: 'result', clean_text, cleanedText }));
-        storeResult(ws.ip, data.prompt, clean_text);
+        const client = clients.get(data.clientId);
+        if (client) {
+            client.send(JSON.stringify({ type: 'result', clean_text, cleanedText }));
+            storeResult(client.ip, data.prompt, clean_text);
+        }
+
         return { clean_text, cleanedText };
     } catch (error) {
         console.error(`Error from BibleBuddyQA: ${error}`);
-        ws.send(JSON.stringify({ type: 'error', message: error.message }));
+        const client = clients.get(data.clientId);
+        if (client) client.send(JSON.stringify({ type: 'error', message: error.message }));
     }
 }
 
@@ -125,7 +131,7 @@ if (isProduction) {
 
     queue.process(async (job) => {
         console.log(`Processing job ${job.id}`);
-        const result = await openaiWorker(job, ws);
+        const result = await openaiWorker(job);
         console.log(`Job ${job.id} completed with result ${result}`);
         return result;
     });
@@ -133,7 +139,6 @@ if (isProduction) {
 
 const httpServer = http.createServer();
 const wss = new WebSocket.Server({ noServer: true, debug: true });
-const clients = new Set();
 
 httpServer.on('upgrade', (request, socket, head) => {
     const { protocol, host } = new URL(`http://${request.headers.host}${request.url}`);
@@ -147,9 +152,31 @@ httpServer.on('upgrade', (request, socket, head) => {
     }
 });
 
+function setupInactivityTimeout(ws, clientId) {
+    let inactivityTimer = setTimeout(() => {
+        console.log(`Closing idle connection for client ${clientId}`);
+        ws.terminate();
+        clients.delete(clientId);
+    }, INACTIVITY_TIMEOUT);
+
+    ws.on('message', () => {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => {
+            console.log(`Closing idle connection for client ${clientId}`);
+            ws.terminate();
+            clients.delete(clientId);
+        }, INACTIVITY_TIMEOUT);
+    });
+
+    ws.on('close', () => {
+        clearTimeout(inactivityTimer);
+    });
+}
+
 wss.on('connection', (_ws, req) => {
     ws = _ws;
-    clients.add(ws);
+    const clientId = uuidv4();
+    clients.set(clientId, ws);
 
     console.log('WebSocket client connected');
 
@@ -163,6 +190,8 @@ wss.on('connection', (_ws, req) => {
         return;
     }
 
+    setupInactivityTimeout(ws, clientId);
+
     ws.on('message', async (message) => {
         try {
             const data = JSON.parse(message).data;
@@ -174,6 +203,7 @@ wss.on('connection', (_ws, req) => {
             const last_prompt = data.last_prompt;
 
             const requestData = {
+                clientId,
                 prompt: input,
                 selectedOption1,
                 selectedOption2,
@@ -209,7 +239,7 @@ wss.on('connection', (_ws, req) => {
     });
 
     ws.on('close', () => {
-        clients.delete(ws);
+        clients.delete(clientId);
         console.log('WebSocket client disconnected');
     });
 });

@@ -21,6 +21,7 @@
     "marked": "^4.3.0",
     "mongodb": "^5.2.0",
     "redis": "^4.6.5",
+    "uuid": "^9.0.1",
     "ws": "^8.13.0"
   },
   "devDependencies": {

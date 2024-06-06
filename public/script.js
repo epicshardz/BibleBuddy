@@ -1,4 +1,5 @@
 import config from '../config.js';
+import { v4 as uuidv4 } from 'https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/esm-browser/index.js';
 
 const botImageUrl = './bot.svg';
 const userImageUrl = './user.svg';
@@ -7,9 +8,11 @@ const chatContainer = document.querySelector('#chat_container')
 const usageGuide = document.getElementById('usage-guide');
 const refreshButton = document.getElementById('refresh-button');
 const submitButton = document.querySelector('form button[type="submit"]');
+const KEEP_ALIVE_INTERVAL = 2.5 * 60 * 1000; // 5 minutes
 
 let loadInterval;
-// This function shows the ... while the Ai is loading/processing
+let clientId = null; // Store clientId
+
 function loader(element){
   element.textContent = '';
 
@@ -20,25 +23,19 @@ function loader(element){
     }
   }, 300)
 }
-// This function slowly types the output from the Ai
+
 function typeText(element, text) {
   let currentIndex = 0;
   let currentString = '';
 
   function type() {
-    // Check if the current index starts with '**'
     if (text.substring(currentIndex, currentIndex + 2) === '**') {
-      // Find the closing '**'
       let closingIndex = text.indexOf('**', currentIndex + 2);
       if (closingIndex !== -1) {
-        // Extract the bold text
         let boldText = text.substring(currentIndex + 2, closingIndex);
-        // Wrap the bold text in <strong> tags
         currentString += `<strong>${boldText}</strong>`;
-        // Update the currentIndex to after the closing '**'
         currentIndex = closingIndex + 2;
       } else {
-        // If no closing '**' is found, just add the '**'
         currentString += text[currentIndex];
         currentIndex++;
       }
@@ -60,7 +57,6 @@ function generateUniqueId() {
   return `id-${Date.now()}-${Math.random().toString(16)}`;
 }
 
-// This function creates separation between the chat messages
 function chatStrip (isAi, value, uniqueId) {
   return (
       `
@@ -79,7 +75,6 @@ function chatStrip (isAi, value, uniqueId) {
   )
 }
 
-// This function creates separation between the text and code
 function codeBlock (codeText) {
   return `
     <div class="code-block">
@@ -122,7 +117,6 @@ let last_prompt = ""
 let current_prompt = ""
 let socket;
 
-// Connect to WebSocket server
 function connectWebSocket() {
   let socketUrl;
   if (window.location.protocol === 'https:') {
@@ -135,8 +129,8 @@ function connectWebSocket() {
 
   socket.addEventListener('open', () => {
     console.log('WebSocket connection established');
-
-
+    clientId = uuidv4(); // Generate a unique clientId using uuid library
+    startKeepAlive();
   });
 
   socket.addEventListener('close', () => {
@@ -163,8 +157,14 @@ function connectWebSocket() {
   socket.addEventListener('error', (error) => {
     console.error('WebSocket error', error);
   });
+}
 
-  return socket;
+function startKeepAlive() {
+  setInterval(() => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ type: 'keep_alive' }));
+    }
+  }, KEEP_ALIVE_INTERVAL);
 }
 
 function sendMessageToWebSocket(message) {
@@ -229,12 +229,13 @@ function handleSubmit(e) {
   const message = JSON.stringify({
     type: 'prompt',
     data: {
+      clientId,
       prompt: data.get('prompt'),
       selectedOption1: document.querySelector(".first-dropdown").value,
       selectedOption2: document.querySelector(".second-dropdown").value,
       selectedOption3: document.querySelector(".third-dropdown").value,
       last_response: last_response,
-      last_prompt: last_prompt,
+      last_prompt: last_prompt
     },
   });
 
@@ -286,8 +287,6 @@ function handleMessage(msg) {
 
       // Create a list to hold the bullet points
       const bulletList = document.createElement('ul');
-      // bulletList.classList.add('large-bullets');
-
 
       // Loop through the cleanedText array and add each item as a list item
       cleanedText.forEach(text => {
@@ -372,7 +371,6 @@ function shareToFacebook(event, buttonElement) {
 }
 
 
-// Add a delegated event listener to the document to handle "Read more..." button clicks
 document.addEventListener('click', function(event) {
   if (event.target.matches('.show-sources')) {
     event.preventDefault();
@@ -408,79 +406,66 @@ let BibleFolderNames = ["ASV","Collections","KJV","AKJV", "ACV"];
 
 
 let DenominationsFolderNames = ["Collections","Seventh Day Adventist"];
-///////Create menu
+
 const menuButton = document.getElementById('menu_button');
 
-// If the menu container doesn't exist, create it
 let menuContainer = document.createElement('div');
 menuContainer.classList.add('menu-container');
 
 const logoImg = document.createElement('img');
 logoImg.src = './biblebuddylogo.png';
-logoImg.classList.add('logo-img'); // Add a class for styling
+logoImg.classList.add('logo-img');
 
 menuContainer.appendChild(logoImg);
 
-// Add a line break between the image and text
 menuContainer.appendChild(document.createElement('br'));
 
-// Add some text to the menu container
 const menuText = document.createElement('p');
 menuText.textContent = 'Welcome to BibleBuddy!';
 
-// Add the text to the menu container
 menuContainer.appendChild(menuText);
 
 const instructionText = document.createElement('p');
 instructionText.textContent = 'Ask BibleBuddy any Bible-related question and receive an accurate answer in seconds!';
-instructionText.style.marginLeft = '15px'; // Adjust the value as needed
+instructionText.style.marginLeft = '15px';
 
-// Add the text to the menu container
 menuContainer.appendChild(instructionText);
 
 const BibleVersionText = document.createElement('p');
 BibleVersionText.textContent = 'Select a Bible Version';
 
-// Add the text to the menu container
 menuContainer.appendChild(BibleVersionText);
 
-// Create the first dropdown menu
 const firstDropdown = document.createElement('select');
 firstDropdown.classList.add('first-dropdown');
-// console.log(BibleFolderNames);
 
-// Loop through stored folder names and create options for the first dropdown menu
 BibleFolderNames.forEach(folderName => {
   const option = document.createElement('option');
   option.textContent = folderName;
   if (folderName != 'Collections') {
     if (folderName === 'KJV') {
-      option.selected = true; // set selected to true for the KJV option
+      option.selected = true;
     }
     firstDropdown.appendChild(option);
   };
 });
 
-// Add the first dropdown to the menu container
 menuContainer.appendChild(firstDropdown);
 
-// Create the second dropdown menu
 const secondDropdown = document.createElement('select');
 secondDropdown.classList.add('second-dropdown');
 
-// Loop through stored folder names and create options for the second dropdown menu
 DenominationsFolderNames.forEach(folderName => {
   const option = document.createElement('option');
   option.textContent = folderName;
   if (folderName != 'Collections') {
     if (folderName === 'Non-Denominational') {
-      option.selected = true; // set selected to true for the KJV option
+      option.selected = true;
     }
     secondDropdown.appendChild(option);
   };
 });
 
-// Add the second dropdown to the menu container
 menuContainer.appendChild(secondDropdown);
 
 const thirdDropdown = document.createElement('select');
@@ -497,20 +482,17 @@ thirdDropdown.appendChild(slowOption);
 
 menuContainer.appendChild(thirdDropdown);
 
-
-// Create the announcements section
 const announcementsSection = document.createElement('div');
 announcementsSection.classList.add('announcements-section');
-// Add a message to the announcements section
+
 const announcementsMessage = document.createElement('p');
 announcementsMessage.textContent = 'Announcements: ';
-// Add the message to the announcements section
+
 announcementsSection.appendChild(announcementsMessage);
 
 const AnnouncementOne = document.createElement('p');
 AnnouncementOne.textContent = 'We are excited to release a faster version of BibleBuddy!\nEnjoy!';
 
-// Add the text to the menu container
 announcementsSection.appendChild(AnnouncementOne);
 
 
@@ -525,7 +507,6 @@ discordLink.href = 'https://discord.gg/BYGtb7swfe';
 discordLink.target = '_blank';
 discordLink.textContent = 'Join our Discord group!';
 
-// Add the Discord group link to the announcements section
 announcementsSection.appendChild(discordLink);
 menuContainer.appendChild(announcementsSection);
 
@@ -535,16 +516,11 @@ if (window.innerWidth > 1267) {
   menuContainer.style.left = '0';
   menuContainer.style.height = '100vh';
 
-  // Create the main container and set it to display flex
-  // Append the menu container to the existing div with the id "app"
   const appContainer = document.getElementById('main-layout-and-sidebar');
   appContainer.insertBefore(menuContainer, appContainer.firstChild);
 } else {
-  // Append the menu container to the page
   document.body.appendChild(menuContainer);
-  // Hide the menu container initially
   menuContainer.style.display = 'none';
-  // Position the menu container below the menu button
   const menuButtonRect = menuButton.getBoundingClientRect();
   menuContainer.style.top = `${menuButtonRect.bottom}px`;
   menuContainer.style.left = `${menuButtonRect.left}px`;
@@ -553,16 +529,9 @@ if (window.innerWidth > 1267) {
   ChatContainer.style.paddingLeft = '0px';
   ChatContainer.style.width = '100%';
 
-
-
-  // Add a click event listener to the menu button
   menuButton.addEventListener('click', (e) => {
-    // Prevent the default behavior of the button
     e.preventDefault();
-
-    // Stop the click event from bubbling up to the document level
     e.stopPropagation();
-
     menuContainer.style.display = (menuContainer.style.display === 'none') ? 'block' : 'none';
     if (usageGuide) {
       usageGuide.style.display = 'none';
@@ -576,13 +545,11 @@ if (window.innerWidth > 1267) {
   });
 }
 
-
-//////////
 const dismissButton = document.getElementById('dismiss-usage-guide');
 dismissButton.addEventListener('click', () => {
   usageGuide.style.display = 'none';
 });
-// listens for submit
+
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   if (!isLoading) {
@@ -591,14 +558,12 @@ form.addEventListener('submit', (e) => {
 });
 
 form.addEventListener('keyup', (e) =>{
-  // If Enter key is pressed without the Shift key, submit the form
   if (e.keyCode === 13 && !e.shiftKey) {
     if (!isLoading) {
       handleSubmit(e);
     }
   }
 
-  // If Shift + Enter key combination is pressed, create a new line
   if (e.shiftKey && e.keyCode === 13) {
     e.preventDefault();
     var textarea = e.target;
