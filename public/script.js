@@ -1,6 +1,3 @@
-import config from '../config.js';
-import { v4 as uuidv4 } from 'https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/esm-browser/index.js';
-
 const botImageUrl = './bot.svg';
 const userImageUrl = './user.svg';
 const form = document.querySelector('form')
@@ -8,7 +5,6 @@ const chatContainer = document.querySelector('#chat_container')
 const usageGuide = document.getElementById('usage-guide');
 const refreshButton = document.getElementById('refresh-button');
 const submitButton = document.querySelector('form button[type="submit"]');
-const KEEP_ALIVE_INTERVAL = 2.5 * 60 * 1000; // 5 minutes
 
 let loadInterval;
 let clientId = null; // Store clientId
@@ -129,8 +125,6 @@ function connectWebSocket() {
 
   socket.addEventListener('open', () => {
     console.log('WebSocket connection established');
-    clientId = uuidv4(); // Generate a unique clientId using uuid library
-    startKeepAlive();
   });
 
   socket.addEventListener('close', () => {
@@ -149,22 +143,15 @@ function connectWebSocket() {
       isLoading = false; // add this line to set isLoading to true
     } else if (data.type === 'stay_alive') {
       console.log('Received stay alive signal from server');
-      // Handle stay alive signal
     }
 
   });
 
-  socket.addEventListener('error', (error) => {
-    console.error('WebSocket error', error);
-  });
-}
+    socket.addEventListener('error', (error) => {
+        console.error('WebSocket error', error);
+    });
+    return socket;
 
-function startKeepAlive() {
-  setInterval(() => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify({ type: 'keep_alive' }));
-    }
-  }, KEEP_ALIVE_INTERVAL);
 }
 
 function sendMessageToWebSocket(message) {
